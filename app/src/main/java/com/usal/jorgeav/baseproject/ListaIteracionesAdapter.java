@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.usal.jorgeav.baseproject.model.Implicante;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -19,14 +21,14 @@ import butterknife.ButterKnife;
 public class ListaIteracionesAdapter  extends RecyclerView.Adapter<ListaIteracionesAdapter.ListaIteracionesViewHolder> {
 
     Context mContext;
-    ArrayList<ArrayList<String>> dataset;
+    ArrayList<ArrayList<Implicante>> dataset;
 
     public ListaIteracionesAdapter(Context context) {
         this.mContext = context;
         this.dataset = null;
     }
 
-    public void setDataset(ArrayList<ArrayList<String>> dataset) {
+    public void setDataset(ArrayList<ArrayList<Implicante>> dataset) {
         this.dataset = dataset;
         notifyDataSetChanged();
     }
@@ -72,7 +74,7 @@ public class ListaIteracionesAdapter  extends RecyclerView.Adapter<ListaIteracio
             sublista.setLayoutManager(linearLayoutManager);
         }
 
-        public void setDataset(ArrayList<String> dataset) {
+        public void setDataset(ArrayList<Implicante> dataset) {
             this.listaSimplificacionesAdapter.setDataset(dataset);
         }
     }
