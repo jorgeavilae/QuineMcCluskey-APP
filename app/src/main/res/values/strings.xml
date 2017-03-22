@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BaseProject</string>
+
+    <string name="variables">Variables</string>
+    <string name="minterms">minterms (separados por \", \")</string>
+    <string name="lista_simplificaciones">Lista de simplificaciones</string>
 </resources>
