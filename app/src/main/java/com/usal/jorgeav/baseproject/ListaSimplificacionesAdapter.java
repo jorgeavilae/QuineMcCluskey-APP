@@ -34,7 +34,7 @@ public class ListaSimplificacionesAdapter extends RecyclerView.Adapter<ListaSimp
     @Override
     public ListaSimplificacionesAdapter.ListaSimplificacionesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.item_lista_simplificaciones;
+        int layoutIdForListItem = R.layout.item_lista_implicante;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutIdForListItem, parent, false);
@@ -44,7 +44,7 @@ public class ListaSimplificacionesAdapter extends RecyclerView.Adapter<ListaSimp
 
     @Override
     public void onBindViewHolder(ListaSimplificacionesAdapter.ListaSimplificacionesViewHolder holder, int position) {
-        holder.sublista.setText(dataset.get(position));
+        holder.tv_implicante.setText(dataset.get(position));
     }
 
     @Override
@@ -57,8 +57,8 @@ public class ListaSimplificacionesAdapter extends RecyclerView.Adapter<ListaSimp
 
     public class ListaSimplificacionesViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_sublista_iteracion)
-        TextView sublista;
+        @BindView(R.id.item_lista_implicante)
+        TextView tv_implicante;
 
         public ListaSimplificacionesViewHolder(View itemView) {
             super(itemView);
