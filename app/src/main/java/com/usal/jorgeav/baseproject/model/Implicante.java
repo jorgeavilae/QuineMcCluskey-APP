@@ -1,6 +1,9 @@
 package com.usal.jorgeav.baseproject.model;
 
+import android.util.Log;
+
 import com.usal.jorgeav.baseproject.MainActivity;
+import com.usal.jorgeav.baseproject.Utils;
 
 import java.util.ArrayList;
 
@@ -17,44 +20,19 @@ public class Implicante {
 
     public Implicante(ArrayList<Integer> terminos, ArrayList<Binario> binarios, int iteracion) {
         this.terminos = terminos;
+        Log.e("ASD", terminos+"----"+terminos.size());
         if (terminos.size() == 1)
-            this.binarios = intToBinary(terminos.get(0), MainActivity.numVariables);
-        else
-            this.binarios = binarios;
+            this.binarios = Utils.intToBinary(terminos.get(0), MainActivity.numVariables);
+        else if (binarios != null) this.binarios = binarios;
+        else throw new NullPointerException("\"binarios\" can not be NULL");
+
         this.iteracion = iteracion;
-        this.subseccion = contar1s(this.binarios);
+        this.subseccion = Utils.contarUnos(this.binarios);
         this.marca = false;
-    }
-
-    private ArrayList<Binario> intToBinary(int n, int numOfBits) {
-        ArrayList<Binario> result = new ArrayList<>();
-        for(int i = 0; i < numOfBits; ++i, n/=2) {
-            switch (n % 2) {
-                case 0:
-                    result.add(new Binario(Binario.b0));
-                    break;
-                case 1:
-                    result.add(new Binario(Binario.b1));
-                    break;
-            }
-        }
-        return result;
-    }
-
-    private int contar1s(ArrayList<Binario> binarios) {
-        int contador = 0;
-        for (Binario b : binarios)
-            if (b.getDigito() == Binario.b1)
-                contador++;
-        return contador;
     }
 
     public ArrayList<Integer> getTerminos() {
         return terminos;
-    }
-
-    public void setTerminos(ArrayList<Integer> terminos) {
-        this.terminos = terminos;
     }
 
     public String terminosToString() {
@@ -69,10 +47,6 @@ public class Implicante {
 
     public ArrayList<Binario> getBinarios() {
         return binarios;
-    }
-
-    public void setBinarios(ArrayList<Binario> binarios) {
-        this.binarios = binarios;
     }
 
     public String binariosToString() {
@@ -91,5 +65,19 @@ public class Implicante {
         this.marca = marca;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Implicante that = (Implicante) o;
+
+        return binarios.equals(that.binarios);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return binarios.hashCode();
+    }
 }
