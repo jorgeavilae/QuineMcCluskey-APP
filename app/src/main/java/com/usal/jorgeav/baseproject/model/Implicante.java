@@ -1,5 +1,7 @@
 package com.usal.jorgeav.baseproject.model;
 
+import com.usal.jorgeav.baseproject.MainActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -13,23 +15,38 @@ public class Implicante {
     private ArrayList<Binario> binarios;
     private boolean marca;
 
-    public Implicante(ArrayList<Integer> terminos) {
-        this.iteracion = 0;
-        this.subseccion = 0;
+    public Implicante(ArrayList<Integer> terminos, ArrayList<Binario> binarios, int iteracion) {
         this.terminos = terminos;
-        this.binarios = getBinariosFromTerminos();
-        this.marca = Math.random() < 0.5;
+        if (terminos.size() == 1)
+            this.binarios = intToBinary(terminos.get(0), MainActivity.numVariables);
+        else
+            this.binarios = binarios;
+        this.iteracion = iteracion;
+        this.subseccion = contar1s(this.binarios);
+        this.marca = false;
     }
 
-    private ArrayList<Binario> getBinariosFromTerminos() {
+    private ArrayList<Binario> intToBinary(int n, int numOfBits) {
         ArrayList<Binario> result = new ArrayList<>();
-        result.add(new Binario(Binario.bZ));
-        result.add(new Binario(Binario.b0));
-        result.add(new Binario(Binario.b1));
-        result.add(new Binario(Binario.bZ));
-        result.add(new Binario(Binario.b0));
+        for(int i = 0; i < numOfBits; ++i, n/=2) {
+            switch (n % 2) {
+                case 0:
+                    result.add(new Binario(Binario.b0));
+                    break;
+                case 1:
+                    result.add(new Binario(Binario.b1));
+                    break;
+            }
+        }
         return result;
+    }
 
+    private int contar1s(ArrayList<Binario> binarios) {
+        int contador = 0;
+        for (Binario b : binarios)
+            if (b.getDigito() == Binario.b1)
+                contador++;
+        return contador;
     }
 
     public ArrayList<Integer> getTerminos() {
@@ -45,7 +62,8 @@ public class Implicante {
         for (Integer i : this.terminos) {
             result.append(i).append(",");
         }
-        result.replace(result.lastIndexOf(","), result.lastIndexOf(",")+1, ")" );
+        try { result.replace(result.lastIndexOf(","), result.lastIndexOf(",")+1, ")" );
+        } catch (IndexOutOfBoundsException e) { e.printStackTrace(); }
         return result.toString().replace(",", ", ");
     }
 
@@ -60,7 +78,7 @@ public class Implicante {
     public String binariosToString() {
         String result = "";
         for (Binario b : this.binarios) {
-            result = result + b.toString();
+            result = b.toString() + result;
         }
         return result;
     }

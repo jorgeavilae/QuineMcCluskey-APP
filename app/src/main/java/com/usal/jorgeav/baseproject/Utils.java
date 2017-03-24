@@ -1,5 +1,7 @@
 package com.usal.jorgeav.baseproject;
 
+import com.usal.jorgeav.baseproject.model.Binario;
+
 import java.util.ArrayList;
 
 /**
@@ -22,6 +24,19 @@ public class Utils {
         result.add("p"); result.add("q"); result.add("r"); result.add("s"); result.add("t");
         result.add("u"); result.add("v"); result.add("w"); result.add("x"); result.add("y");
         result.add("z");
+        return result;
+    }
+
+    public static ArrayList<Binario> compareBinarios(ArrayList<Binario> a, ArrayList<Binario> b) {
+        ArrayList<Binario> result = new ArrayList<>();
+        if (a.size() == b.size())
+            for (int i = 0; i < a.size(); i++) {
+                if (a.get(i).getDigito() == b.get(i).getDigito())
+                    result.add(new Binario(a.get(i).getDigito()));
+                else
+                    result.add(new Binario(Binario.bZ));
+            }
+
         return result;
     }
 }
