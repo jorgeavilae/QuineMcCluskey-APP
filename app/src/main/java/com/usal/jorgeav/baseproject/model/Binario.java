@@ -19,11 +19,11 @@ public class Binario {
         this.digito = digito;
     }
 
-    public int getDigito() {
+    public @EstadoBinario int getDigito() {
         return digito;
     }
 
-    public void setDigito(int digito) {
+    public void setDigito(@EstadoBinario int digito) {
         this.digito = digito;
     }
 

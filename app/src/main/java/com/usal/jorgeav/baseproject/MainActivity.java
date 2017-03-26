@@ -4,9 +4,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableLayout;
 
 import com.usal.jorgeav.baseproject.model.Implicante;
 
@@ -27,11 +30,14 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerViewListaSimplificaciones;
     @BindView(R.id.button)
     Button button;
+    @BindView(R.id.table)
+    TableLayout tableLayout;
 
     ListaIteracionesAdapter listaIteracionesAdapter;
     ArrayList<ArrayList<Implicante>> listaIteraciones;
 
     ArrayList<Implicante> primerosImplicantes;
+    ArrayList<Implicante> primerosImplicantesTotales;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +54,20 @@ public class MainActivity extends AppCompatActivity {
 
         primerosImplicantes = new ArrayList<>();
 
+        tableLayout.setGravity(Gravity.CENTER);
+
     }
 
     public void onClick(View view) {
         //Sacar minterms y numVariables
-        numVariables = 5;
-        int terms[] = {3,8,9,10,11,12,14,19,24,27,13,26};
+        numVariables = 2;
+        int minTerms[] = {0,1,2,3};
+        int maxTerms[] = {};
+        int no_ni[] = {};
 
         //Iniciar iteracion 0
-        ArrayList<Implicante> list = Utils.termsToList(terms);
+        ArrayList<Implicante> list = Utils.termsToList(minTerms);
+        list.addAll(Utils.termsToList(no_ni));
         listaIteraciones.add(list);
 
         //Ordenar iteracion 1
@@ -72,10 +83,43 @@ public class MainActivity extends AppCompatActivity {
 
         //Actualizar lista
         listaIteracionesAdapter.setDataset(listaIteraciones);
+
+        //TODO if primerosimplicantes.size == 1 && binarios == --... => f=1 o f=0 / minterm o maxterm
+
+        //Dibujar tabla
+        boolean[][] tablaMarcas = Utils.dibujarTabla(this, tableLayout, primerosImplicantes, minTerms);
+
+        //Obtener los esenciales de los primeros implicantes
+        ArrayList<Implicante> primerosImplicantesEsenciales =
+                Utils.getPrimerosImplicantesEstenciales(this, tableLayout, primerosImplicantes, minTerms, tablaMarcas);
+
+        //Completar la lista con los implicantes necesarios para los todos los terminos
+        primerosImplicantesTotales = Utils.completarImplicantesParaTerminos(primerosImplicantes, primerosImplicantesEsenciales, minTerms);
+        Log.d("ImplicantesTotales", printArrayListImplicante(primerosImplicantesTotales));
+
     }
 
     private ArrayList<Implicante> getUltimaIteracion(ArrayList<ArrayList<Implicante>> listaIteraciones) {
         return listaIteraciones.get(listaIteraciones.size() - 1);
+    }
+
+    private String printboolean(boolean[][] array){
+        String result = "";
+        for (int i = 0; i < array[0].length; i++) {
+            for (int j = 0; j < array.length; j++) {
+                result = result + array[j][i] + " ";
+            }
+            result = result + "\n";
+        }
+        return result;
+    }
+
+    private String printArrayListImplicante(ArrayList<Implicante> arrayList) {
+        String result = "";
+        for (Implicante impl : arrayList) {
+            result = result + impl.terminosToString() + "\n";
+        }
+        return result;
     }
 
 }

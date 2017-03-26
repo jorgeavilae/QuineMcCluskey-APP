@@ -1,7 +1,5 @@
 package com.usal.jorgeav.baseproject.model;
 
-import android.util.Log;
-
 import com.usal.jorgeav.baseproject.MainActivity;
 import com.usal.jorgeav.baseproject.Utils;
 
@@ -20,14 +18,13 @@ public class Implicante {
 
     public Implicante(ArrayList<Integer> terminos, ArrayList<Binario> binarios, int iteracion) {
         this.terminos = terminos;
-        Log.e("ASD", terminos+"----"+terminos.size());
         if (terminos.size() == 1)
             this.binarios = Utils.intToBinary(terminos.get(0), MainActivity.numVariables);
         else if (binarios != null) this.binarios = binarios;
         else throw new NullPointerException("\"binarios\" can not be NULL");
 
         this.iteracion = iteracion;
-        this.subseccion = Utils.contarUnos(this.binarios);
+        this.subseccion = Utils.contarUnosCeros(this.binarios, Binario.b1);
         this.marca = false;
     }
 
@@ -79,5 +76,32 @@ public class Implicante {
     @Override
     public int hashCode() {
         return binarios.hashCode();
+    }
+
+    public int getVariablesNegadas(boolean isMinTerm) {
+        if (isMinTerm) {
+            return Utils.contarUnosCeros(this.binarios, Binario.b0);
+        } else {
+            return this.subseccion;
+        }
+    }
+
+    public int getEntradasNegadasEnComun(ArrayList<Implicante> lista, boolean isMinTerm) {
+        int comparado;
+        if (isMinTerm)  comparado = Binario.b0;
+        else  comparado = Binario.b1;
+
+        int result = 0;
+        for (int i = 0; i < binarios.size(); i++) {
+            if (this.binarios.get(i).getDigito() == comparado) {
+                for (Implicante impl : lista) {
+                    if (impl.getBinarios().get(i).getDigito() == this.binarios.get(i).getDigito()) {
+                        result++;
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
     }
 }
