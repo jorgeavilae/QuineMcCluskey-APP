@@ -62,10 +62,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         // TODO: 27/03/2017 parsear datos introducidos
         // TODO: 27/03/2017 guardar edittext string en bundle state
         //Parsear funcion y NO/NI
-        numVariables = 4;
-        minTerms = new int[]{0, 2, 3, 5, 7, 8, 10, 11};
-        maxTerms = new int[]{1, 4, 6, 9, 12, 13, 14};
-        no_ni = new int[]{15};
+        numVariables = 5;
+        minTerms = new int[]{3,8,9,10,11,12,14,19,24,27};
+        maxTerms = new int[]{0,1,2,4,5,6,7,15,16,17,18,20,21,22,23,25,28,29,30,31};
+        no_ni = new int[]{13,26};
 
         algoritmo(minTerms, no_ni, true);
         algoritmo(maxTerms, no_ni, false);

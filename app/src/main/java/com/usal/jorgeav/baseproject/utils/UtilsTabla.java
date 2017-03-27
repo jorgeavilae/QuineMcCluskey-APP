@@ -53,16 +53,8 @@ public class UtilsTabla {
         ArrayList<Implicante> result = new ArrayList<>();
         result.addAll(primerosImplicantesEsenciales);
 
-        ArrayList<Integer> faltantes = new ArrayList<>();
-        boolean presente;
-        for (int i = 0; i < terms.length; i++) {
-            presente = false;
-            for (Implicante implicante : primerosImplicantesEsenciales) {
-                if (implicante.getTerminos().contains(Integer.valueOf(terms[i])))
-                    presente = true;
-            }
-            if (!presente) faltantes.add(Integer.valueOf(terms[i]));
-        }
+        ArrayList<Integer> faltantes = obtenerFaltantes(result, terms);
+
 
 //        Implicante implicanteMultiple = escogerMejorImplicanteMultiple(faltantes, primerosImplicantes);
 //        while(implicanteMultiple != null) {
@@ -71,16 +63,47 @@ public class UtilsTabla {
 //        }
 
         ArrayList<Implicante> posibles;
-        for (Integer i : faltantes) {
-            posibles = new ArrayList<>();
-            for (Implicante implicante : primerosImplicantes) {
-                if (implicante.getTerminos().contains(i))
-                    posibles.add(implicante);
+        while (faltantes.size() > 0) {
+            int maxTerminosContenidos = faltantes.size();
+            for (int i = maxTerminosContenidos; i >= 0; i--) {
+                posibles = new ArrayList<>();
+
+                for (Implicante impl : primerosImplicantes)
+                    if (impl.cuantosTerminosIguales(faltantes) == i)
+                        posibles.add(impl);
+
+                if (posibles.size() > 0) {
+                    result.add(escogerMejorImplicante(posibles, primerosImplicantesEsenciales, isMinterm));
+                    break;
+                }
             }
-            result.add(escogerMejorImplicante(posibles, primerosImplicantesEsenciales, isMinterm));
+            faltantes = obtenerFaltantes(result, terms);
         }
+//        ArrayList<Implicante> posibles;
+//        for (Integer i : faltantes) {
+//            posibles = new ArrayList<>();
+//            for (Implicante implicante : primerosImplicantes) {
+//                if (implicante.getTerminos().contains(i))
+//                    posibles.add(implicante);
+//            }
+//            result.add(escogerMejorImplicante(posibles, primerosImplicantesEsenciales, isMinterm));
+//        }
 
         return result;
+    }
+
+    private static ArrayList<Integer> obtenerFaltantes(ArrayList<Implicante> lista, int[] valores) {
+        ArrayList<Integer> faltantes = new ArrayList<>();
+        boolean presente;
+        for (int i = 0; i < valores.length; i++) {
+            presente = false;
+            for (Implicante implicante : lista) {
+                if (implicante.getTerminos().contains(Integer.valueOf(valores[i])))
+                    presente = true;
+            }
+            if (!presente) faltantes.add(Integer.valueOf(valores[i]));
+        }
+        return faltantes;
     }
 
 //    private static Implicante escogerMejorImplicanteMultiple(ArrayList<Integer> faltantes,
@@ -125,21 +148,6 @@ public class UtilsTabla {
         }
         Log.i("Utils", "escogerMejorImplicante: Posibles implicantes "+posibles.size()+" mas simplificado");
 
-        //El que tenga menos variables negadas
-        if (posibles.size() > 1) {
-            int numVariableNegadas = 1000;
-            for (Implicante implicante : posibles) {
-                if (implicante.getVariablesNegadas(isMinterm) < numVariableNegadas) {
-                    numVariableNegadas = implicante.getVariablesNegadas(isMinterm);
-                } else if (implicante.getVariablesNegadas(isMinterm) > numVariableNegadas)
-                    posibles.remove(implicante);
-            }
-            for (Implicante borrar : new ArrayList<>(posibles))
-                if (borrar.getVariablesNegadas(isMinterm) > numVariableNegadas)
-                    posibles.remove(borrar);
-        }
-        Log.i("Utils", "escogerMejorImplicante: Posibles implicantes "+posibles.size()+" menos variables negadas");
-
         //El que tenga mas entradas en comun con otros
         if (posibles.size() > 1) {
             int numEntradas = 0;
@@ -155,8 +163,23 @@ public class UtilsTabla {
                 if (borrar.getEntradasNegadasEnComun(primerosImplicantesEsenciales, true) < numEntradas)
                     posibles.remove(borrar);
         }
-
         Log.i("Utils", "escogerMejorImplicante: Posibles implicantes "+posibles.size()+" mas entradas en comun");
+
+        //El que tenga menos variables negadas
+        if (posibles.size() > 1) {
+            int numVariableNegadas = 1000;
+            for (Implicante implicante : posibles) {
+                if (implicante.getVariablesNegadas(isMinterm) < numVariableNegadas) {
+                    numVariableNegadas = implicante.getVariablesNegadas(isMinterm);
+                } else if (implicante.getVariablesNegadas(isMinterm) > numVariableNegadas)
+                    posibles.remove(implicante);
+            }
+            for (Implicante borrar : new ArrayList<>(posibles))
+                if (borrar.getVariablesNegadas(isMinterm) > numVariableNegadas)
+                    posibles.remove(borrar);
+        }
+        Log.i("Utils", "escogerMejorImplicante: Posibles implicantes "+posibles.size()+" menos variables negadas");
+
         return posibles.get(0);
     }
 }

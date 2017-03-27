@@ -1,6 +1,5 @@
 package com.usal.jorgeav.baseproject.model;
 
-import com.usal.jorgeav.baseproject.MainActivity;
 import com.usal.jorgeav.baseproject.utils.UtilsBinarios;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class Implicante {
     public Implicante(ArrayList<Integer> terminos, ArrayList<Binario> binarios, int iteracion) {
         this.terminos = terminos;
         if (terminos.size() == 1)
-            this.binarios = UtilsBinarios.intToBinary(terminos.get(0), MainActivity.numVariables);
+            this.binarios = UtilsBinarios.intToBinary(terminos.get(0));
         else if (binarios != null) this.binarios = binarios;
         else throw new NullPointerException("\"binarios\" can not be NULL");
 

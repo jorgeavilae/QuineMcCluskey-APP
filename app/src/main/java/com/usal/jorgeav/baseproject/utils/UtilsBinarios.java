@@ -28,9 +28,14 @@ public class UtilsBinarios {
         return diferentes;
     }
 
-    public static ArrayList<Binario> intToBinary(int n, int numOfBits) {
+    public static ArrayList<Binario> intToBinary(int n) {
+        int numBits = 1;
+        while(true) {
+            if (n < Math.pow(2,numBits)) break;
+            numBits++;
+        }
         ArrayList<Binario> result = new ArrayList<>();
-        for(int i = 0; i < numOfBits; ++i, n/=2) {
+        for(int i = 0; i < numBits; ++i, n/=2) {
             switch (n % 2) {
                 case 0:
                     result.add(new Binario(Binario.b0));
