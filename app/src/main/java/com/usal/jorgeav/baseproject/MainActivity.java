@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 
 import com.usal.jorgeav.baseproject.model.Implicante;
+import com.usal.jorgeav.baseproject.utils.UtilsLista;
+import com.usal.jorgeav.baseproject.utils.UtilsTabla;
 
 import java.util.ArrayList;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     ListaIteracionesAdapter listaIteracionesAdapter;
     ArrayList<ArrayList<Implicante>> listaIteraciones;
 
+    boolean[][] tablaMarcas;
     ArrayList<Implicante> primerosImplicantes;
     ArrayList<Implicante> primerosImplicantesTotales;
 
@@ -66,35 +69,38 @@ public class MainActivity extends AppCompatActivity {
         int no_ni[] = {};
 
         //Iniciar iteracion 0
-        ArrayList<Implicante> list = Utils.termsToList(minTerms);
-        list.addAll(Utils.termsToList(no_ni));
+        ArrayList<Implicante> list = UtilsLista.termsToList(minTerms);
+        list.addAll(UtilsLista.termsToList(no_ni));
         listaIteraciones.add(list);
 
         //Ordenar iteracion 1
-        listaIteraciones.add(Utils.ordenarIteracion(listaIteraciones.get(0), numVariables));
+        listaIteraciones.add(UtilsLista.ordenarIteracion(listaIteraciones.get(0), numVariables));
 
         //Emparejar iteracion 1 y sucesivas
         while (true) {
-            ArrayList<Implicante> nuevo = Utils.emparejarIteracion(getUltimaIteracion(listaIteraciones));
-            primerosImplicantes.addAll(Utils.buscarPrimerosImplicantes(getUltimaIteracion(listaIteraciones)));
+            ArrayList<Implicante> nuevo = UtilsLista.emparejarIteracion(getUltimaIteracion(listaIteraciones));
+            primerosImplicantes.addAll(UtilsLista.buscarPrimerosImplicantes(getUltimaIteracion(listaIteraciones)));
             if (nuevo.isEmpty()) break;
             listaIteraciones.add(nuevo);
         }
 
         //Actualizar lista
-        listaIteracionesAdapter.setDataset(listaIteraciones);
+//        listaIteracionesAdapter.setDataset(listaIteraciones);
 
         //TODO if primerosimplicantes.size == 1 && binarios == --... => f=1 o f=0 / minterm o maxterm
 
         //Dibujar tabla
-        boolean[][] tablaMarcas = Utils.dibujarTabla(this, tableLayout, primerosImplicantes, minTerms);
+        tablaMarcas = UtilsTabla.obtenerMarcasTabla(primerosImplicantes, minTerms);
 
         //Obtener los esenciales de los primeros implicantes
         ArrayList<Implicante> primerosImplicantesEsenciales =
-                Utils.getPrimerosImplicantesEstenciales(this, tableLayout, primerosImplicantes, minTerms, tablaMarcas);
+                UtilsTabla.getPrimerosImplicantesEstenciales(primerosImplicantes, tablaMarcas);
 
         //Completar la lista con los implicantes necesarios para los todos los terminos
-        primerosImplicantesTotales = Utils.completarImplicantesParaTerminos(primerosImplicantes, primerosImplicantesEsenciales, minTerms);
+        primerosImplicantesTotales = UtilsTabla.completarImplicantesParaTerminos(primerosImplicantes,
+                primerosImplicantesEsenciales,
+                minTerms,
+                true);
         Log.d("ImplicantesTotales", printArrayListImplicante(primerosImplicantesTotales));
 
     }
