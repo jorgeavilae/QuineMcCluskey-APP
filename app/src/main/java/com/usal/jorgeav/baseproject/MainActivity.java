@@ -1,101 +1,121 @@
 package com.usal.jorgeav.baseproject;
 
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.view.MenuItem;
 
 import com.usal.jorgeav.baseproject.model.Implicante;
+import com.usal.jorgeav.baseproject.utils.Utils;
 import com.usal.jorgeav.baseproject.utils.UtilsLista;
 import com.usal.jorgeav.baseproject.utils.UtilsTabla;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener {
 
     public static int numVariables = 0;
+    int minTerms[];
+    int maxTerms[];
+    int no_ni[];
 
-    @BindView(R.id.et_funcion)
-    EditText etFuncion;
-    @BindView(R.id.et_noni)
-    EditText etNoNi;
-    @BindView(R.id.constraint_resultados)
-    ConstraintLayout constraintResultados;
+    ArrayList<ArrayList<Implicante>> listaIteracionesMinterm;
+    boolean[][] tablaMarcasMinterm;
+    ArrayList<Implicante> primerosImplicantesMinterm;
+    ArrayList<Implicante> primerosImplicantesTotalesMinterm;
 
-    @BindView(R.id.tv_sumatorio)
-    TextView tvSumatorio;
-    @BindView(R.id.tv_funcion_minterm)
-    TextView tvFuncionMinterm;
-    @BindView(R.id.tv_puertas_minterm)
-    TextView tvPuertasMinterm;
-
-    @BindView(R.id.tv_producto)
-    TextView tvProducto;
-    @BindView(R.id.tv_funcion_maxterm)
-    TextView tvFuncionMaxterm;
-    @BindView(R.id.tv_puertas_maxterm)
-    TextView tvPuertasMaxterm;
-
-    @BindView(R.id.progressBar)
-    ProgressBar progressBar;
-    @BindView(R.id.tv_error)
-    TextView tvError;
-
-    ListaIteracionesAdapter listaIteracionesAdapter;
-    ArrayList<ArrayList<Implicante>> listaIteraciones;
-
-    boolean[][] tablaMarcas;
-    ArrayList<Implicante> primerosImplicantes;
-    ArrayList<Implicante> primerosImplicantesTotales;
+    ArrayList<ArrayList<Implicante>> listaIteracionesMaxterm;
+    boolean[][] tablaMarcasMaxterm;
+    ArrayList<Implicante> primerosImplicantesMaxterm;
+    ArrayList<Implicante> primerosImplicantesTotalesMaxterm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.setDebug(true);
-        ButterKnife.bind(this);
-//
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-//        listaIteracionesAdapter = new ListaIteracionesAdapter(this);
-//        listaIteraciones = new ArrayList<>();
-//        recyclerViewListaSimplificaciones.setAdapter(listaIteracionesAdapter);
-//        recyclerViewListaSimplificaciones.setLayoutManager(linearLayoutManager);
-//
-//        primerosImplicantes = new ArrayList<>();
-//
-//        tableLayout.setGravity(Gravity.CENTER);
-
     }
 
-    public void quineMccluskey(View view) {
-        showResultados();
+    @Override
+    protected void onStart() {
+        MainFragment mainFragment = new MainFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, mainFragment).commitNow();
+        numVariables = 0;
+        minTerms = null;
+        maxTerms = null;
+        no_ni = null;
+        listaIteracionesMinterm = null;
+        tablaMarcasMinterm = null;
+        primerosImplicantesMinterm = null;
+        primerosImplicantesTotalesMinterm = null;
+        listaIteracionesMaxterm = null;
+        tablaMarcasMaxterm = null;
+        primerosImplicantesMaxterm = null;
+        primerosImplicantesTotalesMaxterm = null;
+
+        super.onStart();
     }
 
-    public void detallesMinterm(View view) {
-        showError("Err");
+    @Override
+    public void onQuineMcluskey(String funcion, String noniString) {
+        // TODO: 27/03/2017 parsear datos introducidos
+        // TODO: 27/03/2017 guardar edittext string en bundle state
+        //Parsear funcion y NO/NI
+        numVariables = 4;
+        minTerms = new int[]{0, 2, 3, 5, 7, 8, 10, 11};
+        maxTerms = new int[]{1, 4, 6, 9, 12, 13, 14};
+        no_ni = new int[]{15};
+
+        algoritmo(minTerms, no_ni, true);
+        algoritmo(maxTerms, no_ni, false);
+
+        mostrarResultados();
     }
 
-    public void detallesMaxterm(View view) {
-        showProgressBar();
+    //todo parsear resultados
+    private void mostrarResultados() {
+        String implicantesMinterm = Utils.printArrayListImplicante(primerosImplicantesTotalesMinterm);
+        String implicantesMaxterm = Utils.printArrayListImplicante(primerosImplicantesTotalesMaxterm);
+        String funcionSimple = "";
+        int puertas = 0;
+
+        MainFragment mainFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        funcionSimple = "";
+        puertas = 0;
+        mainFragment.setMintermResults(implicantesMinterm, funcionSimple, puertas);
+        funcionSimple = "";
+        puertas = 0;
+        mainFragment.setMaxtermResults(implicantesMaxterm, funcionSimple, puertas);
     }
 
-    public void onClick(View view) {
-        //Sacar minterms y numVariables
-        numVariables = 2;
-        int minTerms[] = {0,1,2,3};
-        int maxTerms[] = {};
-        int no_ni[] = {};
+    @Override
+    public void onDetallesMinterm() {
+        DetailFragment newFragment = new DetailFragment();
+        newFragment.setMinterm(true);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.commit();
+    }
+
+    @Override
+    public void onDetallesMaxterm() {
+        DetailFragment newFragment = new DetailFragment();
+        newFragment.setMinterm(false);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.commit();
+    }
+
+    public void algoritmo(int[] terms, int[] noni, boolean isMinterm) {
+        ArrayList<ArrayList<Implicante>> listaIteraciones = new ArrayList<>();
+        boolean[][] tablaMarcas = null;
+        ArrayList<Implicante> primerosImplicantes = new ArrayList<>();
+        ArrayList<Implicante> primerosImplicantesTotales = null;
 
         //Iniciar iteracion 0
-        ArrayList<Implicante> list = UtilsLista.termsToList(minTerms);
-        list.addAll(UtilsLista.termsToList(no_ni));
+        ArrayList<Implicante> list = UtilsLista.termsToList(terms);
+        list.addAll(UtilsLista.termsToList(noni));
         listaIteraciones.add(list);
 
         //Ordenar iteracion 1
@@ -109,13 +129,9 @@ public class MainActivity extends AppCompatActivity {
             listaIteraciones.add(nuevo);
         }
 
-        //Actualizar lista
-//        listaIteracionesAdapter.setDataset(listaIteraciones);
+        //Obtener marcas de la tabla
+        tablaMarcas = UtilsTabla.obtenerMarcasTabla(primerosImplicantes, terms);
 
-        //TODO if primerosimplicantes.size == 1 && binarios == --... => f=1 o f=0 / minterm o maxterm
-
-        //Dibujar tabla
-        tablaMarcas = UtilsTabla.obtenerMarcasTabla(primerosImplicantes, minTerms);
 
         //Obtener los esenciales de los primeros implicantes
         ArrayList<Implicante> primerosImplicantesEsenciales =
@@ -124,32 +140,23 @@ public class MainActivity extends AppCompatActivity {
         //Completar la lista con los implicantes necesarios para los todos los terminos
         primerosImplicantesTotales = UtilsTabla.completarImplicantesParaTerminos(primerosImplicantes,
                 primerosImplicantesEsenciales,
-                minTerms,
-                true);
-        Log.d("ImplicantesTotales", printArrayListImplicante(primerosImplicantesTotales));
+                terms,
+                isMinterm);
 
-    }
+        //TODO if primerosimplicantes.size == 1 && binarios == --... => f=1 o f=0 / minterm o maxterm
 
-    private void showError(String error) {
-        tvError.setVisibility(View.VISIBLE);
-        tvError.setText(error);
-        progressBar.setVisibility(View.INVISIBLE);
-        constraintResultados.setVisibility(View.INVISIBLE);
+        if(isMinterm) {
+            listaIteracionesMinterm = listaIteraciones;
+            tablaMarcasMinterm = tablaMarcas;
+            primerosImplicantesMinterm = primerosImplicantes;
+            primerosImplicantesTotalesMinterm = primerosImplicantesTotales;
+        } else {
+            listaIteracionesMaxterm = listaIteraciones;
+            tablaMarcasMaxterm = tablaMarcas;
+            primerosImplicantesMaxterm = primerosImplicantes;
+            primerosImplicantesTotalesMaxterm = primerosImplicantesTotales;
 
-    }
-
-    private void showProgressBar() {
-        tvError.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        constraintResultados.setVisibility(View.INVISIBLE);
-
-    }
-
-    private void showResultados() {
-        tvError.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.INVISIBLE);
-        constraintResultados.setVisibility(View.VISIBLE);
-
+        }
     }
 
     private ArrayList<Implicante> getUltimaIteracion(ArrayList<ArrayList<Implicante>> listaIteraciones) {
@@ -167,11 +174,35 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-    private String printArrayListImplicante(ArrayList<Implicante> arrayList) {
-        String result = "";
-        for (Implicante impl : arrayList) {
-            result = result + impl.terminosToString() + "\n";
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                MainFragment mainFragment = new MainFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, mainFragment).commitNow();
+                if (primerosImplicantesTotalesMinterm != null && primerosImplicantesTotalesMaxterm != null)
+                    mostrarResultados();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return result;
     }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+        if (fragment instanceof DetailFragment) {
+            MainFragment mainFragment = new MainFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, mainFragment).commitNow();
+            if (primerosImplicantesTotalesMinterm != null && primerosImplicantesTotalesMaxterm != null)
+                mostrarResultados();
+        } else
+            super.onBackPressed();
+
+    }
+
 }

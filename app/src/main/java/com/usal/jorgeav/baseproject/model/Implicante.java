@@ -78,6 +78,15 @@ public class Implicante {
         return binarios.hashCode();
     }
 
+    public int cuantosTerminosIguales(ArrayList<Integer> integers) {
+        int contador = 0;
+        for (Integer i : integers) {
+            if (this.terminos.contains(i))
+                contador++;
+        }
+        return contador;
+    }
+
     public int getVariablesNegadas(boolean isMinTerm) {
         if (isMinTerm) {
             return UtilsBinarios.contarUnosCeros(this.binarios, Binario.b0);

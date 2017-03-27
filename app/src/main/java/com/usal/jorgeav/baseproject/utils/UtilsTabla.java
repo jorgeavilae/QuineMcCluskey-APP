@@ -22,7 +22,7 @@ public class UtilsTabla {
     public static ArrayList<Implicante> getPrimerosImplicantesEstenciales(ArrayList<Implicante> primerosImplicantes,
                                                                           boolean[][] tablaMarcas) {
         ArrayList<Implicante> result = new ArrayList<>();
-        for (int i = 0; i < tablaMarcas[i].length; i++) {
+        for (int i = 0; i < tablaMarcas[0].length; i++) {
             int index = indexOfUnicaMarca(tablaMarcas, i);
             if (index != -1) {
                 if (!result.contains(primerosImplicantes.get(index)))
@@ -32,7 +32,7 @@ public class UtilsTabla {
         return result;
     }
 
-    private static int indexOfUnicaMarca(boolean[][] tablaMarcas, int columna) {
+    public static int indexOfUnicaMarca(boolean[][] tablaMarcas, int columna) {
         int index = -1;
         for (int j = 0; j < tablaMarcas.length; j++) {
             if (tablaMarcas[j][columna]) {
@@ -64,6 +64,12 @@ public class UtilsTabla {
             if (!presente) faltantes.add(Integer.valueOf(terms[i]));
         }
 
+//        Implicante implicanteMultiple = escogerMejorImplicanteMultiple(faltantes, primerosImplicantes);
+//        while(implicanteMultiple != null) {
+//            result.add(implicanteMultiple);
+//            implicanteMultiple = escogerMejorImplicanteMultiple(faltantes, primerosImplicantes);
+//        }
+
         ArrayList<Implicante> posibles;
         for (Integer i : faltantes) {
             posibles = new ArrayList<>();
@@ -76,6 +82,27 @@ public class UtilsTabla {
 
         return result;
     }
+
+//    private static Implicante escogerMejorImplicanteMultiple(ArrayList<Integer> faltantes,
+//                                                             ArrayList<Implicante> primerosImplicantes) {
+//        //El que mas terminos contenga
+//        int numFaltantes = 0;
+//        for (Implicante implicante : primerosImplicantes) {
+//            int terminosIguales =
+//                    implicante.cuantosTerminosIguales(faltantes);
+//            if (terminosIguales > numFaltantes) {
+//                numFaltantes = terminosIguales;
+//            } else if (terminosIguales < numFaltantes)
+//                primerosImplicantes.remove(implicante);
+//        }
+//
+//        for (I : new ArrayList<>(primerosImplicantes))
+//            if (borrar.().size() < numFaltantes)
+//                primerosImplicantes.remove(borrar);
+//
+//        Log.i("Utils", "escogerMejorImplicante: Posibles implicantes "+primerosImplicantes.size()+" mas simplificado");
+//        return primerosImplicantes.get(0);
+//    }
 
 
     private static Implicante escogerMejorImplicante(ArrayList<Implicante> posibles,
@@ -92,7 +119,7 @@ public class UtilsTabla {
                 } else if (implicante.getTerminos().size() < numTerminos)
                     posibles.remove(implicante);
             }
-            for (Implicante borrar : posibles)
+            for (Implicante borrar : new ArrayList<>(posibles))
                 if (borrar.getTerminos().size() < numTerminos)
                     posibles.remove(borrar);
         }
@@ -107,7 +134,7 @@ public class UtilsTabla {
                 } else if (implicante.getVariablesNegadas(isMinterm) > numVariableNegadas)
                     posibles.remove(implicante);
             }
-            for (Implicante borrar : posibles)
+            for (Implicante borrar : new ArrayList<>(posibles))
                 if (borrar.getVariablesNegadas(isMinterm) > numVariableNegadas)
                     posibles.remove(borrar);
         }
@@ -124,7 +151,7 @@ public class UtilsTabla {
                 } else if (entradasNegadasEnComun < numEntradas)
                     posibles.remove(implicante);
             }
-            for (Implicante borrar : posibles)
+            for (Implicante borrar : new ArrayList<>(posibles))
                 if (borrar.getEntradasNegadasEnComun(primerosImplicantesEsenciales, true) < numEntradas)
                     posibles.remove(borrar);
         }

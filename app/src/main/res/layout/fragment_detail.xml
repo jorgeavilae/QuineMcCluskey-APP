@@ -9,7 +9,7 @@
     android:layout_marginRight="8dp"
     android:layout_marginTop="8dp"
     android:orientation="vertical"
-    tools:context="com.usal.jorgeav.baseproject.DetailActivity">
+    tools:context="com.usal.jorgeav.baseproject.DetailFragment">
 
     <TextView
         android:id="@+id/textView"
@@ -36,15 +36,19 @@
         android:layout_marginTop="8dp"
         android:text="@string/tabla_implicantes"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
-    <TableLayout
-        android:id="@+id/table"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="8dp"
-        android:stretchColumns="*"/>
+        android:layout_height="wrap_content">
+        <TableLayout
+            android:id="@+id/table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="8dp"
+            android:stretchColumns="*"/>
+    </HorizontalScrollView>
 
 
     <TextView

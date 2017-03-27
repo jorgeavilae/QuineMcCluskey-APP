@@ -1,8 +1,18 @@
 package com.usal.jorgeav.baseproject.utils;
 
+import com.usal.jorgeav.baseproject.model.Implicante;
+
 import java.util.ArrayList;
 
 public class Utils {
+
+    public static String printArrayListImplicante(ArrayList<Implicante> arrayList) {
+        String result = "";
+        for (Implicante impl : arrayList) {
+            result = result + impl.terminosToString() + ", ";
+        }
+        return result;
+    }
 
     public static ArrayList<String> getAlfabeto() {
         ArrayList<String> result = new ArrayList<>();
