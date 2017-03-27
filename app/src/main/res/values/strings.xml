@@ -1,7 +1,18 @@
 <resources>
-    <string name="app_name">BaseProject</string>
+    <string name="app_name">Quine-McCluskey</string>
 
-    <string name="variables">Variables</string>
-    <string name="minterms">minterms (separados por \", \")</string>
+    <string name="funcion_hint">Funcion [ Ej. (Ab+C)(d+E)F ]</string>
+    <string name="no_ni_hint">NO/NI (separados por \", \")</string>
+    <string name="minterms">minTerms</string>
+    <string name="maxterms">MaxTerms</string>
+    <string name="sumatorio">&#x03A3;m = %s</string>
+    <string name="producto">&#x03A0;M = %s</string>
+    <string name="funcion">f = %s</string>
+    <string name="puertas">%d Puertas</string>
+    <string name="detalles">Detalles</string>
+
+
     <string name="lista_simplificaciones">Lista de simplificaciones</string>
+    <string name="tabla_implicantes">Tabla de Primeros Implicantes</string>
+    <string name="resultados">Resultado:</string>
 </resources>

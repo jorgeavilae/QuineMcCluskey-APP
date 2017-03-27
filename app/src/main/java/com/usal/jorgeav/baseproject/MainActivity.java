@@ -1,15 +1,13 @@
 package com.usal.jorgeav.baseproject;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TableLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.usal.jorgeav.baseproject.model.Implicante;
 import com.usal.jorgeav.baseproject.utils.UtilsLista;
@@ -24,16 +22,31 @@ public class MainActivity extends AppCompatActivity {
 
     public static int numVariables = 0;
 
-    @BindView(R.id.et_num_variables)
-    EditText numVariablesEsitText;
-    @BindView(R.id.et_minterms)
-    EditText mintermEditText;
-    @BindView(R.id.rv_lista_simplificaciones)
-    RecyclerView recyclerViewListaSimplificaciones;
-    @BindView(R.id.button)
-    Button button;
-    @BindView(R.id.table)
-    TableLayout tableLayout;
+    @BindView(R.id.et_funcion)
+    EditText etFuncion;
+    @BindView(R.id.et_noni)
+    EditText etNoNi;
+    @BindView(R.id.constraint_resultados)
+    ConstraintLayout constraintResultados;
+
+    @BindView(R.id.tv_sumatorio)
+    TextView tvSumatorio;
+    @BindView(R.id.tv_funcion_minterm)
+    TextView tvFuncionMinterm;
+    @BindView(R.id.tv_puertas_minterm)
+    TextView tvPuertasMinterm;
+
+    @BindView(R.id.tv_producto)
+    TextView tvProducto;
+    @BindView(R.id.tv_funcion_maxterm)
+    TextView tvFuncionMaxterm;
+    @BindView(R.id.tv_puertas_maxterm)
+    TextView tvPuertasMaxterm;
+
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.tv_error)
+    TextView tvError;
 
     ListaIteracionesAdapter listaIteracionesAdapter;
     ArrayList<ArrayList<Implicante>> listaIteraciones;
@@ -48,17 +61,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.setDebug(true);
         ButterKnife.bind(this);
+//
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+//        listaIteracionesAdapter = new ListaIteracionesAdapter(this);
+//        listaIteraciones = new ArrayList<>();
+//        recyclerViewListaSimplificaciones.setAdapter(listaIteracionesAdapter);
+//        recyclerViewListaSimplificaciones.setLayoutManager(linearLayoutManager);
+//
+//        primerosImplicantes = new ArrayList<>();
+//
+//        tableLayout.setGravity(Gravity.CENTER);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        listaIteracionesAdapter = new ListaIteracionesAdapter(this);
-        listaIteraciones = new ArrayList<>();
-        recyclerViewListaSimplificaciones.setAdapter(listaIteracionesAdapter);
-        recyclerViewListaSimplificaciones.setLayoutManager(linearLayoutManager);
+    }
 
-        primerosImplicantes = new ArrayList<>();
+    public void quineMccluskey(View view) {
+        showResultados();
+    }
 
-        tableLayout.setGravity(Gravity.CENTER);
+    public void detallesMinterm(View view) {
+        showError("Err");
+    }
 
+    public void detallesMaxterm(View view) {
+        showProgressBar();
     }
 
     public void onClick(View view) {
@@ -105,6 +130,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void showError(String error) {
+        tvError.setVisibility(View.VISIBLE);
+        tvError.setText(error);
+        progressBar.setVisibility(View.INVISIBLE);
+        constraintResultados.setVisibility(View.INVISIBLE);
+
+    }
+
+    private void showProgressBar() {
+        tvError.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        constraintResultados.setVisibility(View.INVISIBLE);
+
+    }
+
+    private void showResultados() {
+        tvError.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+        constraintResultados.setVisibility(View.VISIBLE);
+
+    }
+
     private ArrayList<Implicante> getUltimaIteracion(ArrayList<ArrayList<Implicante>> listaIteraciones) {
         return listaIteraciones.get(listaIteraciones.size() - 1);
     }
@@ -127,5 +174,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
-
 }
