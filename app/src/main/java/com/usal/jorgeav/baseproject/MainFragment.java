@@ -6,6 +6,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,15 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainFragment extends Fragment {
+    public static final String EDITTEXT_FUNCION_KEY = "edittex-funcion-key";
+    public static final String EDITTEXT_NONI_KEY = "edittex-noni-key";
 
     @BindView(R.id.et_funcion)
     EditText etFuncion;
@@ -53,7 +59,21 @@ public class MainFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            etFuncion.setText(savedInstanceState.getString(EDITTEXT_FUNCION_KEY));
+            etNoNi.setText(savedInstanceState.getString(EDITTEXT_NONI_KEY));
+            Log.e("ASDAS", etFuncion.getText().toString() + etNoNi.getText().toString());
+        }
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EDITTEXT_FUNCION_KEY, etFuncion.getText().toString());
+        outState.putString(EDITTEXT_NONI_KEY, etNoNi.getText().toString());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,12 +124,24 @@ public class MainFragment extends Fragment {
 
     // TODO: 27/03/2017 comprobar sintaxis
     private boolean comprobarFuncion(String s) {
-        return true;
+//        return true;
+        Matcher m = Pattern.compile("^([0-9]+(, ?)?)+$").matcher(s);
+        /* 1,2,3,4
+           5, 6, 7 */
+        return m.find();
     }
 
     // TODO: 27/03/2017 comprobar sintaxis
     private boolean comprobarTerminos(String s) {
-        return true;
+//        return true;
+        Matcher m = Pattern.compile("^([0-9]+(, ?)?)+$").matcher(s);
+        /* 1,2,3,4
+           5, 6, 7 */
+        return m.find() || s.isEmpty();
+    }
+
+    public void setEditTexts(String funcionStr, String noniStr) {
+
     }
 
     public void setMintermResults(String minterms, String funcionSimple, int puertas) {

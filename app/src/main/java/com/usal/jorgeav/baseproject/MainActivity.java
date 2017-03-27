@@ -1,21 +1,27 @@
 package com.usal.jorgeav.baseproject;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.usal.jorgeav.baseproject.model.Implicante;
 import com.usal.jorgeav.baseproject.utils.Utils;
+import com.usal.jorgeav.baseproject.utils.UtilsBinarios;
 import com.usal.jorgeav.baseproject.utils.UtilsLista;
 import com.usal.jorgeav.baseproject.utils.UtilsTabla;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener {
+    private static final String BUNDLE_FRAGMENT_KEY = "BUNDLE_FRAGMENT_KEY";
 
-    public static int numVariables = 0;
+    int numVariables = 0;
     int minTerms[];
     int maxTerms[];
     int no_ni[];
@@ -34,13 +40,21 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (savedInstanceState != null) {
+            MainFragment mainFragment = (MainFragment)getSupportFragmentManager().getFragment(savedInstanceState, BUNDLE_FRAGMENT_KEY);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, mainFragment).commitNow();
+        }
     }
 
     @Override
     protected void onStart() {
-        MainFragment mainFragment = new MainFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, mainFragment).commitNow();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (!(fragment instanceof MainFragment)) {
+            MainFragment mainFragment = new MainFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, mainFragment).commitNow();
+        }
         numVariables = 0;
         minTerms = null;
         maxTerms = null;
@@ -57,15 +71,55 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         super.onStart();
     }
 
+    private void parsearFuncion(String funcionStr) {
+        String[] terminosStr = funcionStr.split("(, ?)");
+        ArrayList<Integer> min = new ArrayList<>();
+        for (int i = 0; i < terminosStr.length; i++) {
+            min.add(Integer.valueOf(terminosStr[i]));
+        }
+
+        minTerms = Utils.convertIntegers(min);
+        maxTerms = new int[]{0,7,8,9,10,11,12,13,14,15};
+    }
+
+    private void parsearNoNi(String noniString) {
+        if (!noniString.isEmpty()) {
+            String[] terminosStr = noniString.split("(, ?)");
+            ArrayList<Integer> noni = new ArrayList<>();
+            for (int i = 0; i < terminosStr.length; i++) {
+                noni.add(Integer.valueOf(terminosStr[i]));
+            }
+            no_ni = Utils.convertIntegers(noni);
+
+        } else {
+            Log.e("ASDASD", "NoNi empty");
+        }
+
+        numVariables = 0;
+        for (int i = 0; i < minTerms.length; i++) {
+            int numDigitosBinarios = UtilsBinarios.cuantosDigitosBinario(minTerms[i]);
+            if (numVariables < numDigitosBinarios) numVariables = numDigitosBinarios;
+        }
+        for (int i = 0; i < maxTerms.length; i++) {
+            int numDigitosBinarios = UtilsBinarios.cuantosDigitosBinario(maxTerms[i]);
+            if (numVariables < numDigitosBinarios) numVariables = numDigitosBinarios;
+        }
+        for (int i = 0; i < no_ni.length; i++) {
+            int numDigitosBinarios = UtilsBinarios.cuantosDigitosBinario(no_ni[i]);
+            if (numVariables < numDigitosBinarios) numVariables = numDigitosBinarios;
+        }
+
+        maxTerms = Utils.obtenerRestoDeTerminos(numVariables, minTerms, no_ni);
+    }
+
     @Override
-    public void onQuineMcluskey(String funcion, String noniString) {
-        // TODO: 27/03/2017 parsear datos introducidos
-        // TODO: 27/03/2017 guardar edittext string en bundle state
+    public void onQuineMcluskey(String funcionStr, String noniString) {
         //Parsear funcion y NO/NI
-        numVariables = 5;
-        minTerms = new int[]{3,8,9,10,11,12,14,19,24,27};
-        maxTerms = new int[]{0,1,2,4,5,6,7,15,16,17,18,20,21,22,23,25,28,29,30,31};
-        no_ni = new int[]{13,26};
+        hideKeyboard();
+        // TODO: 27/03/2017 parsear datos introducidos
+        parsearFuncion(funcionStr);
+        parsearNoNi(noniString);
+        // TODO: 27/03/2017 guardar edittext string en bundle state
 
         algoritmo(minTerms, no_ni, true);
         algoritmo(maxTerms, no_ni, false);
@@ -114,8 +168,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         ArrayList<Implicante> primerosImplicantesTotales = null;
 
         //Iniciar iteracion 0
-        ArrayList<Implicante> list = UtilsLista.termsToList(terms);
-        list.addAll(UtilsLista.termsToList(noni));
+        ArrayList<Implicante> list = UtilsLista.termsToList(terms, numVariables);
+        list.addAll(UtilsLista.termsToList(noni, numVariables));
         listaIteraciones.add(list);
 
         //Ordenar iteracion 1
@@ -123,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         //Emparejar iteracion 1 y sucesivas
         while (true) {
-            ArrayList<Implicante> nuevo = UtilsLista.emparejarIteracion(getUltimaIteracion(listaIteraciones));
+            ArrayList<Implicante> nuevo = UtilsLista.emparejarIteracion(getUltimaIteracion(listaIteraciones), numVariables);
             primerosImplicantes.addAll(UtilsLista.buscarPrimerosImplicantes(getUltimaIteracion(listaIteraciones)));
             if (nuevo.isEmpty()) break;
             listaIteraciones.add(nuevo);
@@ -172,6 +226,25 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
             result = result + "\n";
         }
         return result;
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save the fragment's instance
+
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (fragment instanceof MainFragment) {
+            getSupportFragmentManager().putFragment(outState, BUNDLE_FRAGMENT_KEY, fragment);
+        }
     }
 
     @Override

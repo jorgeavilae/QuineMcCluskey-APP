@@ -15,10 +15,10 @@ public class Implicante {
     private ArrayList<Binario> binarios;
     private boolean marca;
 
-    public Implicante(ArrayList<Integer> terminos, ArrayList<Binario> binarios, int iteracion) {
+    public Implicante(ArrayList<Integer> terminos, ArrayList<Binario> binarios, int iteracion, int numVariables) {
         this.terminos = terminos;
         if (terminos.size() == 1)
-            this.binarios = UtilsBinarios.intToBinary(terminos.get(0));
+            this.binarios = UtilsBinarios.intToBinary(terminos.get(0), numVariables);
         else if (binarios != null) this.binarios = binarios;
         else throw new NullPointerException("\"binarios\" can not be NULL");
 

@@ -266,6 +266,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:text="Inserta Datos"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

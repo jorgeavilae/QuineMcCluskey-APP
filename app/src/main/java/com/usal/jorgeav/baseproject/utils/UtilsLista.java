@@ -11,13 +11,13 @@ import java.util.ArrayList;
 
 public class UtilsLista {
 
-    public static ArrayList<Implicante> termsToList(int[] ints) {
+    public static ArrayList<Implicante> termsToList(int[] ints, int numOfBits) {
         ArrayList<Implicante> result = new ArrayList<>(ints.length);
         ArrayList<Integer> terminos;
         for (int anInt : ints) {
             terminos = new ArrayList<>(1);
             terminos.add(anInt);
-            result.add(new Implicante(terminos, null, 0));
+            result.add(new Implicante(terminos, null, 0, numOfBits));
         }
         return result;
     }
@@ -27,13 +27,13 @@ public class UtilsLista {
         for (int i = 0; i <= numOfBits; i++)
             for (Implicante implicante : list)
                 if (implicante.subseccion == i) {
-                    ordenado.add(new Implicante(implicante.getTerminos(), null, implicante.iteracion + 1));
+                    ordenado.add(new Implicante(implicante.getTerminos(), null, implicante.iteracion+1, numOfBits));
                     implicante.setMarca(true);
                 }
         return ordenado;
     }
 
-    public static ArrayList<Implicante> emparejarIteracion(ArrayList<Implicante> list) {
+    public static ArrayList<Implicante> emparejarIteracion(ArrayList<Implicante> list, int numOfBits) {
         ArrayList<Implicante> result = new ArrayList<>();
 
         for (Implicante implicante : list) {
@@ -47,7 +47,7 @@ public class UtilsLista {
                     ArrayList<Binario> binarios =
                             UtilsBinarios.fusionaBinarios(implicante.getBinarios(), comparado.getBinarios());
 
-                    Implicante nuevoImplicante = new Implicante(terminos, binarios, implicante.iteracion + 1);
+                    Implicante nuevoImplicante = new Implicante(terminos, binarios, implicante.iteracion+1, numOfBits);
                     if (!result.contains(nuevoImplicante)) {
                         result.add(nuevoImplicante);
                         marcarSimplificados(list, terminos);

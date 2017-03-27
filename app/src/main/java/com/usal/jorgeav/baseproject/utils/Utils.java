@@ -3,15 +3,40 @@ package com.usal.jorgeav.baseproject.utils;
 import com.usal.jorgeav.baseproject.model.Implicante;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Utils {
 
     public static String printArrayListImplicante(ArrayList<Implicante> arrayList) {
-        String result = "";
+        StringBuilder result = new StringBuilder("");
         for (Implicante impl : arrayList) {
-            result = result + impl.terminosToString() + ", ";
+            result.append(impl.terminosToString()).append(", ");
         }
-        return result;
+        try { result.replace(result.lastIndexOf(", "), result.lastIndexOf(", ")+1, "");
+        } catch (IndexOutOfBoundsException e) { e.printStackTrace(); }
+        return result.toString();
+    }
+
+    public static String printArrayListInteger(ArrayList<Integer> arrayList) {
+        StringBuilder result = new StringBuilder("");
+        for (Integer impl : arrayList) {
+            result.append(impl).append(", ");
+        }
+        try { result.replace(result.lastIndexOf(", "), result.lastIndexOf(", ")+1, "");
+        } catch (IndexOutOfBoundsException e) { e.printStackTrace(); }
+        return result.toString();
+    }
+
+    public static int[] convertIntegers(List<Integer> integers)
+    {
+        int[] ret = new int[integers.size()];
+        Iterator<Integer> iterator = integers.iterator();
+        for (int i = 0; i < ret.length; i++)
+        {
+            ret[i] = iterator.next().intValue();
+        }
+        return ret;
     }
 
     public static ArrayList<String> getAlfabeto() {
@@ -31,4 +56,23 @@ public class Utils {
         return result;
     }
 
+    public static int[] obtenerRestoDeTerminos(int numVariables, int[] minTerms, int[] no_ni) {
+        ArrayList<Integer> result = new ArrayList<>();
+        int maximo = (int) Math.pow(2, numVariables);
+        for (int termino = 0; termino < maximo; termino++) {
+            boolean presente = false;
+            for (int j = 0; j < minTerms.length; j++)
+                if (minTerms[j] == termino) {
+                    presente = true;
+                    break;
+                }
+            for (int j = 0; j < no_ni.length; j++)
+                if (no_ni[j] == termino) {
+                    presente = true;
+                    break;
+                }
+            if (!presente) result.add(termino);
+        }
+        return convertIntegers(result);
+    }
 }
