@@ -28,7 +28,7 @@ public class UtilsBinarios {
         return diferentes;
     }
 
-    public static ArrayList<Binario> intToBinary(int n, int numOfBits) {
+    public static ArrayList<Binario> intToBinarios(int n, int numOfBits) {
         ArrayList<Binario> result = new ArrayList<>();
         for(int i = 0; i < numOfBits; ++i, n/=2) {
             switch (n % 2) {
@@ -37,6 +37,21 @@ public class UtilsBinarios {
                     break;
                 case 1:
                     result.add(new Binario(Binario.b1));
+                    break;
+            }
+        }
+        return result;
+    }
+
+    public static boolean[] intToBinaryBoolean(int n, int numOfBits) {
+        boolean[] result = new boolean[numOfBits];
+        for(int i = 0; i < numOfBits; ++i, n/=2) {
+            switch (n % 2) {
+                case 0:
+                    result[i] = false;
+                    break;
+                case 1:
+                    result[i] = true;
                     break;
             }
         }

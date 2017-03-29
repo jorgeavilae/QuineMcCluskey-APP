@@ -38,48 +38,89 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("funcion ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState != null) {
-            MainFragment mainFragment = (MainFragment)getSupportFragmentManager().getFragment(savedInstanceState, BUNDLE_FRAGMENT_KEY);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, mainFragment).commitNow();
-        }
+//        if (savedInstanceState != null) {
+//            MainFragment mainFragment = (MainFragment)getSupportFragmentManager().getFragment(savedInstanceState, BUNDLE_FRAGMENT_KEY);
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.fragment_container, mainFragment).commitNow();
+//        }
     }
 
     @Override
     protected void onStart() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (!(fragment instanceof MainFragment)) {
-            MainFragment mainFragment = new MainFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, mainFragment).commitNow();
-        }
-        numVariables = 0;
-        minTerms = null;
-        maxTerms = null;
-        no_ni = null;
-        listaIteracionesMinterm = null;
-        tablaMarcasMinterm = null;
-        primerosImplicantesMinterm = null;
-        primerosImplicantesTotalesMinterm = null;
-        listaIteracionesMaxterm = null;
-        tablaMarcasMaxterm = null;
-        primerosImplicantesMaxterm = null;
-        primerosImplicantesTotalesMaxterm = null;
+//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+//        if (!(fragment instanceof MainFragment)) {
+//            MainFragment mainFragment = new MainFragment();
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.fragment_container, mainFragment).commitNow();
+//        }
+//        numVariables = 0;
+//        minTerms = null;
+//        maxTerms = null;
+//        no_ni = null;
+//        listaIteracionesMinterm = null;
+//        tablaMarcasMinterm = null;
+//        primerosImplicantesMinterm = null;
+//        primerosImplicantesTotalesMinterm = null;
+//        listaIteracionesMaxterm = null;
+//        tablaMarcasMaxterm = null;
+//        primerosImplicantesMaxterm = null;
+//        primerosImplicantesTotalesMaxterm = null;
 
+        //todo borrar
+        testCosas();
         super.onStart();
     }
 
-    private void parsearFuncion(String funcionStr) {
-        String[] terminosStr = funcionStr.split("(, ?)");
-        ArrayList<Integer> min = new ArrayList<>();
-        for (int i = 0; i < terminosStr.length; i++) {
-            min.add(Integer.valueOf(terminosStr[i]));
-        }
+    private void testCosas() {
+        String s1 = "f(a,b,c)=ab+c";
+        String s2 = "f(a,b,c,d)=a+b";
+        String s3 = "f(a,b,c)=((ab)+(bc))";
+        String s4 = "f(a,b,c,d)=(a+b+c)(d+a)";
+        String s5 = "f(a,b,c,d)=ab+cd+ad";
+        String s6 = "f(a,b,c,d)=ab(ab+cd + a(acb))ad";
+        String s7 = "f(a,b,c,d)=a(ab+cd + a(acb))";
+        String s8 = "f(a,b,c,d)=(a(b+cd) + a(acb))ad";
+        String s9 = "f(a,b,c,d)=a(ab+cd + a(acb))+c";
+        String s10 = "f(a,b,c,d)=a+(ab+cd + a(acb))a";
+        String s11 = "f(a,b,c,d)=asd";
+        String s12 = "f(a)=a";
+        String s13 = "f (a, b, c, d)=asd";
+        String s14 = "f(a,b,c,d) =asd";
+        String s15 = "f(a,b,c,d) = asd";
 
+        Log.d("RESULT",""+parsearFuncion(s3,""));
+        //evaluarFuncion(s10);
+    }
+
+    private boolean parsearFuncion(String funcionStr, String noniString) {
+        numVariables = Utils.sacarVariables(funcionStr);
+        if (numVariables < 1) return false;
+        parsearNoNi(noniString);
+
+        String[] ladosIgualdad = funcionStr.split(" ?= ?");
+        String funcion = ladosIgualdad[1];
+
+        Log.e("FUNC", funcion);
+        boolean[] valores;
+        ArrayList<Integer> min = new ArrayList<>();
+        ArrayList<Integer> max = new ArrayList<>();
+        for (int i = 0; i < Math.pow(2, numVariables); i++)
+            if (!Utils.hasInt(no_ni, i)) {
+                valores = UtilsBinarios.intToBinaryBoolean(i, numVariables);
+                boolean evaluadaFuncion = Utils.evaluarFuncion(funcion, valores);
+                Log.d("FUNC",printboolean(valores)+" -- "+evaluadaFuncion);
+                if (evaluadaFuncion) min.add(i);
+                else max.add(i);
+            }
+
+        Log.d("FUNCm", Utils.printArrayListInteger(min));
+        Log.d("FUNCM", Utils.printArrayListInteger(max));
         minTerms = Utils.convertIntegers(min);
-        maxTerms = new int[]{0,7,8,9,10,11,12,13,14,15};
+        maxTerms = Utils.convertIntegers(max);
+        return true;
     }
 
     private void parsearNoNi(String noniString) {
@@ -90,41 +131,30 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 noni.add(Integer.valueOf(terminosStr[i]));
             }
             no_ni = Utils.convertIntegers(noni);
-
         } else {
-            Log.e("ASDASD", "NoNi empty");
+            no_ni = new int[]{};
+            Log.e("ParsearNoNi", "NoNi empty");
         }
-
-        numVariables = 0;
-        for (int i = 0; i < minTerms.length; i++) {
-            int numDigitosBinarios = UtilsBinarios.cuantosDigitosBinario(minTerms[i]);
-            if (numVariables < numDigitosBinarios) numVariables = numDigitosBinarios;
-        }
-        for (int i = 0; i < maxTerms.length; i++) {
-            int numDigitosBinarios = UtilsBinarios.cuantosDigitosBinario(maxTerms[i]);
-            if (numVariables < numDigitosBinarios) numVariables = numDigitosBinarios;
-        }
-        for (int i = 0; i < no_ni.length; i++) {
-            int numDigitosBinarios = UtilsBinarios.cuantosDigitosBinario(no_ni[i]);
-            if (numVariables < numDigitosBinarios) numVariables = numDigitosBinarios;
-        }
-
-        maxTerms = Utils.obtenerRestoDeTerminos(numVariables, minTerms, no_ni);
     }
 
     @Override
     public void onQuineMcluskey(String funcionStr, String noniString) {
-        //Parsear funcion y NO/NI
-        hideKeyboard();
-        // TODO: 27/03/2017 parsear datos introducidos
-        parsearFuncion(funcionStr);
-        parsearNoNi(noniString);
-        // TODO: 27/03/2017 guardar edittext string en bundle state
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (fragment instanceof MainFragment) {
+            //Parsear funcion y NO/NI
+            hideKeyboard();
+            if (!parsearFuncion(funcionStr, noniString)) {
+                ((MainFragment) fragment).showError("Error en la sintaxis de la funcion");
+                return;
+            }
+            // TODO: 27/03/2017 guardar edittext string en bundle state
 
-        algoritmo(minTerms, no_ni, true);
-        algoritmo(maxTerms, no_ni, false);
+            algoritmo(minTerms, no_ni, true);
+            algoritmo(maxTerms, no_ni, false);
 
-        mostrarResultados();
+            mostrarResultados();
+            ((MainFragment) fragment).showResultados();
+        }
     }
 
     //todo parsear resultados
@@ -217,13 +247,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         return listaIteraciones.get(listaIteraciones.size() - 1);
     }
 
-    private String printboolean(boolean[][] array){
+    private String printboolean(boolean[] array){
         String result = "";
-        for (int i = 0; i < array[0].length; i++) {
-            for (int j = 0; j < array.length; j++) {
-                result = result + array[j][i] + " ";
-            }
-            result = result + "\n";
+        for (int i = 0; i < array.length; i++) {
+            result = result + (array[i]?"1":"0") + " ";
         }
         return result;
     }

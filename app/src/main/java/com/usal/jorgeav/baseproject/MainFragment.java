@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.usal.jorgeav.baseproject.utils.Utils;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -105,36 +107,22 @@ public class MainFragment extends Fragment {
 
     public void quineMccluskey(View view) {
         showProgressBar();
-        boolean sintaxisFuncion = comprobarFuncion(etFuncion.getText().toString());
         boolean sintaxisNoNi = comprobarTerminos(etNoNi.getText().toString());
 
-        if (!sintaxisFuncion) {
-            showError("No se reconoce la sintaxis en la funcion.");
-        } else if (!sintaxisNoNi) {
+        if (!sintaxisNoNi) {
             showError("No se reconoce la sintaxis de los terminos NO/NI");
         } else {
             if (mListener != null) {
                 mListener.onQuineMcluskey(etFuncion.getText().toString(), etNoNi.getText().toString());
-                showResultados();
             } else {
                 showError("Error en el fragment");
             }
         }
     }
 
-    // TODO: 27/03/2017 comprobar sintaxis
-    private boolean comprobarFuncion(String s) {
-//        return true;
-        Matcher m = Pattern.compile("^([0-9]+(, ?)?)+$").matcher(s);
-        /* 1,2,3,4
-           5, 6, 7 */
-        return m.find();
-    }
-
-    // TODO: 27/03/2017 comprobar sintaxis
     private boolean comprobarTerminos(String s) {
 //        return true;
-        Matcher m = Pattern.compile("^([0-9]+(, ?)?)+$").matcher(s);
+        Matcher m = Pattern.compile(Utils.PATTERN_LISTA_TERMINOS).matcher(s);
         /* 1,2,3,4
            5, 6, 7 */
         return m.find() || s.isEmpty();
@@ -168,7 +156,7 @@ public class MainFragment extends Fragment {
             mListener.onDetallesMaxterm();
     }
 
-    private void showError(String error) {
+    public void showError(String error) {
         tvError.setVisibility(View.VISIBLE);
         tvError.setText(error);
         progressBar.setVisibility(View.INVISIBLE);
@@ -176,14 +164,14 @@ public class MainFragment extends Fragment {
 
     }
 
-    private void showProgressBar() {
+    public void showProgressBar() {
         tvError.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         constraintResultados.setVisibility(View.INVISIBLE);
 
     }
 
-    private void showResultados() {
+    public void showResultados() {
         tvError.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         constraintResultados.setVisibility(View.VISIBLE);
