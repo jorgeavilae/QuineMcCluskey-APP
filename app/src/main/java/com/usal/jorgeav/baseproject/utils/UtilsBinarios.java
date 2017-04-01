@@ -29,23 +29,17 @@ public class UtilsBinarios {
     }
 
     public static ArrayList<Binario> intToBinarios(int n, int numOfBits) {
-        ArrayList<Binario> result = new ArrayList<>();
-        for(int i = 0; i < numOfBits; ++i, n/=2) {
-            switch (n % 2) {
-                case 0:
-                    result.add(new Binario(Binario.b0));
-                    break;
-                case 1:
-                    result.add(new Binario(Binario.b1));
-                    break;
-            }
+        ArrayList<Binario> result = new ArrayList<>(numOfBits);
+        boolean[] boolResult = intToBinaryBoolean(n, numOfBits);
+        for (int i = 0; i < boolResult.length; i++) {
+            result.add(new Binario((boolResult[i]?Binario.b1:Binario.b0)));
         }
         return result;
     }
 
     public static boolean[] intToBinaryBoolean(int n, int numOfBits) {
         boolean[] result = new boolean[numOfBits];
-        for(int i = 0; i < numOfBits; ++i, n/=2) {
+        for(int i = numOfBits-1; i >= 0; --i, n/=2) {
             switch (n % 2) {
                 case 0:
                     result[i] = false;

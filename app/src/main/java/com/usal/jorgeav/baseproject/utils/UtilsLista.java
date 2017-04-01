@@ -77,7 +77,6 @@ public class UtilsLista {
         return result;
     }
 
-
     private static void marcarSimplificados(ArrayList<Implicante> implicantes, ArrayList<Integer> terminos) {
         for (Implicante i : implicantes)
             if (terminos.containsAll(i.getTerminos()))

@@ -19,12 +19,16 @@ import com.usal.jorgeav.baseproject.utils.UtilsTabla;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener {
+    public static final String BUNDLE_ET_FUNCION_KEY = "BUNDLE_ET_FUNCION_KEY";
+    public static final String BUNDLE_ET_NONI_KEY = "BUNDLE_ET_NONI_KEY";
     private static final String BUNDLE_FRAGMENT_KEY = "BUNDLE_FRAGMENT_KEY";
-
     int numVariables = 0;
     int minTerms[];
     int maxTerms[];
     int no_ni[];
+
+    String etFuncion;
+    String etNoni;
 
     ArrayList<ArrayList<Implicante>> listaIteracionesMinterm;
     boolean[][] tablaMarcasMinterm;
@@ -38,64 +42,45 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("funcion ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        if (savedInstanceState != null) {
-//            MainFragment mainFragment = (MainFragment)getSupportFragmentManager().getFragment(savedInstanceState, BUNDLE_FRAGMENT_KEY);
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_container, mainFragment).commitNow();
-//        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_FRAGMENT_KEY)) {
+            Fragment fragment = getSupportFragmentManager().getFragment(savedInstanceState, BUNDLE_FRAGMENT_KEY);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment).commitNow();
+        } else {
+            MainFragment mainFragment = new MainFragment();
+            if (savedInstanceState != null
+                    && savedInstanceState.containsKey(BUNDLE_ET_FUNCION_KEY)
+                    && savedInstanceState.containsKey(BUNDLE_ET_NONI_KEY)) {
+                Bundle b = new Bundle(savedInstanceState);
+                mainFragment.setArguments(b);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, mainFragment).commitNow();
+
+        }
     }
 
-    @Override
-    protected void onStart() {
-//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-//        if (!(fragment instanceof MainFragment)) {
-//            MainFragment mainFragment = new MainFragment();
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_container, mainFragment).commitNow();
-//        }
-//        numVariables = 0;
-//        minTerms = null;
-//        maxTerms = null;
-//        no_ni = null;
-//        listaIteracionesMinterm = null;
-//        tablaMarcasMinterm = null;
-//        primerosImplicantesMinterm = null;
-//        primerosImplicantesTotalesMinterm = null;
-//        listaIteracionesMaxterm = null;
-//        tablaMarcasMaxterm = null;
-//        primerosImplicantesMaxterm = null;
-//        primerosImplicantesTotalesMaxterm = null;
-
-        //todo borrar
-        testCosas();
-        super.onStart();
-    }
-
-    private void testCosas() {
-        String s1 = "f(a,b,c)=ab+c";
-        String s2 = "f(a,b,c,d)=a+b";
-        String s3 = "f(a,b,c)=((ab)+(bc))";
-        String s4 = "f(a,b,c,d)=(a+b+c)(d+a)";
-        String s5 = "f(a,b,c,d)=ab+cd+ad";
-        String s6 = "f(a,b,c,d)=ab(ab+cd + a(acb))ad";
-        String s7 = "f(a,b,c,d)=a(ab+cd + a(acb))";
-        String s8 = "f(a,b,c,d)=(a(b+cd) + a(acb))ad";
-        String s9 = "f(a,b,c,d)=a(ab+cd + a(acb))+c";
-        String s10 = "f(a,b,c,d)=a+(ab+cd + a(acb))a";
-        String s11 = "f(a,b,c,d)=asd";
-        String s12 = "f(a)=a";
-        String s13 = "f (a, b, c, d)=asd";
-        String s14 = "f(a,b,c,d) =asd";
-        String s15 = "f(a,b,c,d) = asd";
-
-        Log.d("RESULT",""+parsearFuncion(s3,""));
-        //evaluarFuncion(s10);
+    private void resetVariables() {
+        numVariables = 0;
+        minTerms = null;
+        maxTerms = null;
+        no_ni = null;
+        listaIteracionesMinterm = null;
+        tablaMarcasMinterm = null;
+        primerosImplicantesMinterm = null;
+        primerosImplicantesTotalesMinterm = null;
+        listaIteracionesMaxterm = null;
+        tablaMarcasMaxterm = null;
+        primerosImplicantesMaxterm = null;
+        primerosImplicantesTotalesMaxterm = null;
     }
 
     private boolean parsearFuncion(String funcionStr, String noniString) {
+        resetVariables();
+
         numVariables = Utils.sacarVariables(funcionStr);
         if (numVariables < 1) return false;
         parsearNoNi(noniString);
@@ -104,23 +89,47 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         String funcion = ladosIgualdad[1];
 
         Log.e("FUNC", funcion);
-        boolean[] valores;
-        ArrayList<Integer> min = new ArrayList<>();
-        ArrayList<Integer> max = new ArrayList<>();
-        for (int i = 0; i < Math.pow(2, numVariables); i++)
-            if (!Utils.hasInt(no_ni, i)) {
-                valores = UtilsBinarios.intToBinaryBoolean(i, numVariables);
-                boolean evaluadaFuncion = Utils.evaluarFuncion(funcion, valores);
-                Log.d("FUNC",printboolean(valores)+" -- "+evaluadaFuncion);
-                if (evaluadaFuncion) min.add(i);
-                else max.add(i);
+
+        if (!(funcion.isEmpty())) {
+            ArrayList<Integer> min = new ArrayList<>();
+            ArrayList<Integer> max = new ArrayList<>();
+
+            if (funcion.matches(Utils.PATTERN_LISTA_TERMINOS)) {
+                String[] terminosStr = funcion.split("(, ?)");
+                for (int i = 0; i < terminosStr.length; i++)
+                    min.add(Integer.valueOf(terminosStr[i]));
+                max.addAll(Utils.obtenerRestoDeTerminos(numVariables, min, no_ni));
+            } else {
+                boolean[] valores;
+                for (int i = 0; i < Math.pow(2, numVariables); i++)
+                    if (!Utils.hasInt(no_ni, i)) {
+                        valores = UtilsBinarios.intToBinaryBoolean(i, numVariables);
+                        boolean evaluadaFuncion = false;
+                        try {
+                            evaluadaFuncion = Utils.evaluarFuncion(funcion, valores);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return false;
+                        }
+                        Log.d("FUNC", Utils.printboolean(valores) + " -- " + evaluadaFuncion);
+                        if (evaluadaFuncion) min.add(i);
+                        else max.add(i);
+                    }
             }
 
-        Log.d("FUNCm", Utils.printArrayListInteger(min));
-        Log.d("FUNCM", Utils.printArrayListInteger(max));
-        minTerms = Utils.convertIntegers(min);
-        maxTerms = Utils.convertIntegers(max);
-        return true;
+            minTerms = Utils.convertIntegers(min);
+            maxTerms = Utils.convertIntegers(max);
+            Log.d("FUNCm", Utils.printintegers(minTerms));
+            Log.d("FUNCM", Utils.printintegers(maxTerms));
+            return true;
+        }
+        return false;
+
+
+//        numVariables = 2;
+//        parsearNoNi("");
+//        minTerms = new int[]{0,1,2,3};
+//        maxTerms = new int[]{};
     }
 
     private void parsearNoNi(String noniString) {
@@ -147,17 +156,21 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 ((MainFragment) fragment).showError("Error en la sintaxis de la funcion");
                 return;
             }
-            // TODO: 27/03/2017 guardar edittext string en bundle state
 
             algoritmo(minTerms, no_ni, true);
             algoritmo(maxTerms, no_ni, false);
 
+            Log.d("FUNCm", Utils.printArrayListImplicante(primerosImplicantesTotalesMinterm));
+            Log.d("FUNCM", Utils.printArrayListImplicante(primerosImplicantesTotalesMaxterm));
+            Log.d("RESULT m", Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true));
+            Log.d("RESULT M", Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false));
+            Log.d("RESULT m", String.valueOf(Utils.contarPuertas(Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true))));
+            Log.d("RESULT M", String.valueOf(Utils.contarPuertas(Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false))));
             mostrarResultados();
             ((MainFragment) fragment).showResultados();
         }
     }
 
-    //todo parsear resultados
     private void mostrarResultados() {
         String implicantesMinterm = Utils.printArrayListImplicante(primerosImplicantesTotalesMinterm);
         String implicantesMaxterm = Utils.printArrayListImplicante(primerosImplicantesTotalesMaxterm);
@@ -165,11 +178,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         int puertas = 0;
 
         MainFragment mainFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        funcionSimple = "";
-        puertas = 0;
+        funcionSimple = Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true);
+        puertas = Utils.contarPuertas(funcionSimple);
         mainFragment.setMintermResults(implicantesMinterm, funcionSimple, puertas);
-        funcionSimple = "";
-        puertas = 0;
+        funcionSimple = Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false);
+        puertas = Utils.contarPuertas(funcionSimple);
         mainFragment.setMaxtermResults(implicantesMaxterm, funcionSimple, puertas);
     }
 
@@ -189,6 +202,16 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.commit();
+    }
+
+    @Override
+    public void setEditTextFuncion(String string) {
+        etFuncion = string;
+    }
+
+    @Override
+    public void setEditTextNoni(String string) {
+        etNoni = string;
     }
 
     public void algoritmo(int[] terms, int[] noni, boolean isMinterm) {
@@ -227,8 +250,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 terms,
                 isMinterm);
 
-        //TODO if primerosimplicantes.size == 1 && binarios == --... => f=1 o f=0 / minterm o maxterm
-
         if(isMinterm) {
             listaIteracionesMinterm = listaIteraciones;
             tablaMarcasMinterm = tablaMarcas;
@@ -247,14 +268,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         return listaIteraciones.get(listaIteraciones.size() - 1);
     }
 
-    private String printboolean(boolean[] array){
-        String result = "";
-        for (int i = 0; i < array.length; i++) {
-            result = result + (array[i]?"1":"0") + " ";
-        }
-        return result;
-    }
-
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -266,11 +279,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //Save the fragment's instance
-
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (fragment instanceof MainFragment) {
+        if (fragment instanceof MainFragment)
             getSupportFragmentManager().putFragment(outState, BUNDLE_FRAGMENT_KEY, fragment);
+        else {
+            outState.putString(BUNDLE_ET_FUNCION_KEY, etFuncion);
+            outState.putString(BUNDLE_ET_NONI_KEY, etNoni);
         }
     }
 

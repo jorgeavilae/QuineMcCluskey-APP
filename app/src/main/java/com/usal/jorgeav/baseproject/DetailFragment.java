@@ -89,6 +89,7 @@ public class DetailFragment extends Fragment {
 
         //Actualizar TextViews
         textViewImplicantes.setText(Utils.printArrayListImplicante(primerosImplicantesTotales));
+        textViewFuncion.setText(String.format("F = %s", Utils.escribirFuncionFromImplicantes(primerosImplicantesTotales, isMinterm)));
 
         return view;
     }
@@ -142,11 +143,13 @@ public class DetailFragment extends Fragment {
     }
 
     private void pintarImplicantesEsenciales (boolean[][] tablaMarcas) {
-        for (int i = 0; i < tablaMarcas[0].length; i++) {
-            int index = UtilsTabla.indexOfUnicaMarca(tablaMarcas, i);
-            if (index != -1) {
-                TextView tv = (TextView)tableLayout.findViewById(Integer.valueOf(String.format(Locale.ENGLISH, cellIdFormat, index, i)));
-                tv.setTextColor(ContextCompat.getColor(mainActivity, R.color.colorAccent));
+        if (tablaMarcas.length > 0) {
+            for (int i = 0; i < tablaMarcas[0].length; i++) {
+                int index = UtilsTabla.indexOfUnicaMarca(tablaMarcas, i);
+                if (index != -1) {
+                    TextView tv = (TextView) tableLayout.findViewById(Integer.valueOf(String.format(Locale.ENGLISH, cellIdFormat, index, i)));
+                    tv.setTextColor(ContextCompat.getColor(mainActivity, R.color.colorAccent));
+                }
             }
         }
     }

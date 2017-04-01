@@ -48,7 +48,7 @@ public class Implicante {
     public String binariosToString() {
         String result = "";
         for (Binario b : this.binarios) {
-            result = b.toString() + result;
+            result = result + b.toString();
         }
         return result;
     }
@@ -111,5 +111,13 @@ public class Implicante {
             }
         }
         return result;
+    }
+
+    public boolean isTotalReduce() {
+        for (Binario b : this.binarios) {
+            if (b.getDigito() != Binario.bZ)
+                return false;
+        }
+        return true;
     }
 }

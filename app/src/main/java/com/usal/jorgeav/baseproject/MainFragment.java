@@ -6,7 +6,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.usal.jorgeav.baseproject.utils.Utils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,7 +65,6 @@ public class MainFragment extends Fragment {
         if (savedInstanceState != null) {
             etFuncion.setText(savedInstanceState.getString(EDITTEXT_FUNCION_KEY));
             etNoNi.setText(savedInstanceState.getString(EDITTEXT_NONI_KEY));
-            Log.e("ASDAS", etFuncion.getText().toString() + etNoNi.getText().toString());
         }
     }
     @Override
@@ -83,6 +80,43 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
 
+        Bundle b = getArguments();
+        if (b != null) {
+            etFuncion.setText(b.getString(MainActivity.BUNDLE_ET_FUNCION_KEY));
+            etNoNi.setText(b.getString(MainActivity.BUNDLE_ET_NONI_KEY));
+        }
+
+        etFuncion.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (mListener != null)
+                    mListener.setEditTextFuncion(editable.toString());
+            }
+        });
+        etNoNi.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (mListener != null)
+                    mListener.setEditTextNoni(editable.toString());
+            }
+        });
+
         btQuineMc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,13 +126,15 @@ public class MainFragment extends Fragment {
         btDetallesMinterm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                detallesMinterm(view);
+                if (mListener != null)
+                    mListener.onDetallesMinterm();
             }
         });
         btDetallesMaxterm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                detallesMaxterm(view);
+                if (mListener != null)
+                    mListener.onDetallesMaxterm();
             }
         });
 
@@ -107,9 +143,8 @@ public class MainFragment extends Fragment {
 
     public void quineMccluskey(View view) {
         showProgressBar();
-        boolean sintaxisNoNi = comprobarTerminos(etNoNi.getText().toString());
 
-        if (!sintaxisNoNi) {
+        if (!(etNoNi.getText().toString().isEmpty() || etNoNi.getText().toString().matches(Utils.PATTERN_LISTA_TERMINOS))) {
             showError("No se reconoce la sintaxis de los terminos NO/NI");
         } else {
             if (mListener != null) {
@@ -118,18 +153,6 @@ public class MainFragment extends Fragment {
                 showError("Error en el fragment");
             }
         }
-    }
-
-    private boolean comprobarTerminos(String s) {
-//        return true;
-        Matcher m = Pattern.compile(Utils.PATTERN_LISTA_TERMINOS).matcher(s);
-        /* 1,2,3,4
-           5, 6, 7 */
-        return m.find() || s.isEmpty();
-    }
-
-    public void setEditTexts(String funcionStr, String noniStr) {
-
     }
 
     public void setMintermResults(String minterms, String funcionSimple, int puertas) {
@@ -144,16 +167,6 @@ public class MainFragment extends Fragment {
         tvFuncionMaxterm.setText(String.format(getResources().getString(R.string.funcion), funcionSimple));
         tvPuertasMaxterm.setText(String.format(getResources().getString(R.string.puertas), puertas));
         showResultados();
-    }
-
-    public void detallesMinterm(View view) {
-        if (mListener != null)
-            mListener.onDetallesMinterm();
-    }
-
-    public void detallesMaxterm(View view) {
-        if (mListener != null)
-            mListener.onDetallesMaxterm();
     }
 
     public void showError(String error) {
@@ -202,5 +215,7 @@ public class MainFragment extends Fragment {
         void onQuineMcluskey(String funcion, String noni);
         void onDetallesMinterm();
         void onDetallesMaxterm();
+        void setEditTextFuncion(String string);
+        void setEditTextNoni(String string);
     }
 }
