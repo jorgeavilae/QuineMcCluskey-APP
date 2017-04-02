@@ -12,12 +12,14 @@ import java.util.ArrayList;
 public class UtilsLista {
 
     public static ArrayList<Implicante> termsToList(int[] ints, int numOfBits) {
-        ArrayList<Implicante> result = new ArrayList<>(ints.length);
-        ArrayList<Integer> terminos;
-        for (int anInt : ints) {
-            terminos = new ArrayList<>(1);
-            terminos.add(anInt);
-            result.add(new Implicante(terminos, null, 0, numOfBits));
+        ArrayList<Implicante> result = new ArrayList<>();
+        if (ints != null) {
+            ArrayList<Integer> terminos;
+            for (int anInt : ints) {
+                terminos = new ArrayList<>(1);
+                terminos.add(anInt);
+                result.add(new Implicante(terminos, null, 0, numOfBits));
+            }
         }
         return result;
     }

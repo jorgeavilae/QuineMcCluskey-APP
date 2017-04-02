@@ -120,7 +120,7 @@ public class MainFragment extends Fragment {
         btQuineMc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                quineMccluskey(view);
+                quineMccluskey();
             }
         });
         btDetallesMinterm.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +141,7 @@ public class MainFragment extends Fragment {
         return view;
     }
 
-    public void quineMccluskey(View view) {
+    public void quineMccluskey() {
         showProgressBar();
 
         if (!(etNoNi.getText().toString().isEmpty() || etNoNi.getText().toString().matches(Utils.PATTERN_LISTA_TERMINOS))) {

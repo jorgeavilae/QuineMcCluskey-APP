@@ -14,7 +14,7 @@ public class Utils {
     private static final int LETRAS_EN_ALFABETO = 26;
 
     public static String printArrayListImplicante(ArrayList<Implicante> arrayList) {
-        if (!arrayList.isEmpty()) {
+        if (arrayList != null && !arrayList.isEmpty()) {
             StringBuilder result = new StringBuilder("");
             for (Implicante impl : arrayList) {
                 result.append(impl.terminosToString()).append(", ");
@@ -25,11 +25,11 @@ public class Utils {
                 e.printStackTrace();
             }
             return result.toString();
-        } else return "Empty";
+        } else return "()";
     }
 
     public static String printArrayListInteger(ArrayList<Integer> arrayList) {
-        if (!arrayList.isEmpty()) {
+        if (arrayList != null && !arrayList.isEmpty()) {
             StringBuilder result = new StringBuilder("");
             for (Integer impl : arrayList) {
                 result.append(impl).append(", ");
@@ -41,21 +41,25 @@ public class Utils {
             }
             return result.toString();
         }
-        return "Empty";
+        return "";
     }
 
     public static String printboolean(boolean[] array){
         String result = "";
-        for (int i = 0; i < array.length; i++) {
-            result = result + (array[i]?"1":"0") + " ";
+        if (array != null) {
+            for (int i = 0; i < array.length; i++) {
+                result = result + (array[i] ? "1" : "0") + " ";
+            }
         }
         return result;
     }
 
     public static String printintegers(int[] array){
         String result = "";
-        for (int i = 0; i < array.length; i++) {
-            result = result + String.valueOf(array[i]) + " ";
+        if (array != null) {
+            for (int i = 0; i < array.length; i++) {
+                result = result + String.valueOf(array[i]) + " ";
+            }
         }
         return result;
     }

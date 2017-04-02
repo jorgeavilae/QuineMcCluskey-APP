@@ -18,6 +18,7 @@ import com.usal.jorgeav.baseproject.utils.UtilsTabla;
 
 import java.util.ArrayList;
 
+// TODO: 01/04/2017 Comentar;   Lint;
 public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener {
     public static final String BUNDLE_ET_FUNCION_KEY = "BUNDLE_ET_FUNCION_KEY";
     public static final String BUNDLE_ET_NONI_KEY = "BUNDLE_ET_NONI_KEY";
@@ -119,8 +120,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
             minTerms = Utils.convertIntegers(min);
             maxTerms = Utils.convertIntegers(max);
-            Log.d("FUNCm", Utils.printintegers(minTerms));
-            Log.d("FUNCM", Utils.printintegers(maxTerms));
+            Log.d("FUNC", "m "+Utils.printintegers(minTerms));
+            Log.d("FUNC", "M "+Utils.printintegers(maxTerms));
             return true;
         }
         return false;
@@ -142,12 +143,17 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
             no_ni = Utils.convertIntegers(noni);
         } else {
             no_ni = new int[]{};
-            Log.e("ParsearNoNi", "NoNi empty");
+            Log.i("ParsearNoNi", "NoNi empty");
         }
+
+        Log.d("FUNC", "n "+Utils.printintegers(no_ni));
     }
 
     @Override
     public void onQuineMcluskey(String funcionStr, String noniString) {
+//        funcionStr = "f(a,b)=ab+Ab+aB+AB";
+//        noniString = "";
+
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (fragment instanceof MainFragment) {
             //Parsear funcion y NO/NI
@@ -160,12 +166,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
             algoritmo(minTerms, no_ni, true);
             algoritmo(maxTerms, no_ni, false);
 
-            Log.d("FUNCm", Utils.printArrayListImplicante(primerosImplicantesTotalesMinterm));
-            Log.d("FUNCM", Utils.printArrayListImplicante(primerosImplicantesTotalesMaxterm));
-            Log.d("RESULT m", Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true));
-            Log.d("RESULT M", Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false));
-            Log.d("RESULT m", String.valueOf(Utils.contarPuertas(Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true))));
-            Log.d("RESULT M", String.valueOf(Utils.contarPuertas(Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false))));
+            Log.d("RESULT", "Primeros Implicantes m: "+Utils.printArrayListImplicante(primerosImplicantesTotalesMinterm));
+            Log.d("RESULT", "Primeros Implicantes M: "+Utils.printArrayListImplicante(primerosImplicantesTotalesMaxterm));
+            Log.d("RESULT", "Funcion m: "+Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true));
+            Log.d("RESULT", "Funcion M: "+Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false));
+            Log.d("RESULT", "Puertas m: "+String.valueOf(Utils.contarPuertas(Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true))));
+            Log.d("RESULT", "Puertas M: "+String.valueOf(Utils.contarPuertas(Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false))));
             mostrarResultados();
             ((MainFragment) fragment).showResultados();
         }
@@ -222,7 +228,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         //Iniciar iteracion 0
         ArrayList<Implicante> list = UtilsLista.termsToList(terms, numVariables);
-        list.addAll(UtilsLista.termsToList(noni, numVariables));
+        if (noni != null)
+            list.addAll(UtilsLista.termsToList(noni, numVariables));
         listaIteraciones.add(list);
 
         //Ordenar iteracion 1

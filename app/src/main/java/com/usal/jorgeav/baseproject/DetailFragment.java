@@ -101,9 +101,11 @@ public class DetailFragment extends Fragment {
         TableRow row = new TableRow(mainActivity);
         TextView tv = getNewTextView("", true, -1, -1);
         row.addView(tv);
-        for (int i = 0; i < minTerms.length; i++) {
-            tv = getNewTextView(String.format(Locale.ENGLISH,"\t%2d \t",minTerms[i]), true, -1, -1);
-            row.addView(tv);
+        if (minTerms != null) {
+            for (int i = 0; i < minTerms.length; i++) {
+                tv = getNewTextView(String.format(Locale.ENGLISH, "\t%2d \t", minTerms[i]), true, -1, -1);
+                row.addView(tv);
+            }
         }
         tableLayout.addView(row);
 
@@ -113,12 +115,14 @@ public class DetailFragment extends Fragment {
             String fila = String.format(Locale.ENGLISH,"\t%s \t",implicante.terminosToString());
             tv = getNewTextView(fila, true, -1, -1);
             row.addView(tv);
-            for (int i = 0; i < minTerms.length; i++) {
-                if (tablaMarcas[primerosImplicantes.indexOf(implicante)][i]) marcaCelda = "X";
-                else marcaCelda = "";
+            if (minTerms != null) {
+                for (int i = 0; i < minTerms.length; i++) {
+                    if (tablaMarcas[primerosImplicantes.indexOf(implicante)][i]) marcaCelda = "X";
+                    else marcaCelda = "";
 
-                tv = getNewTextView(marcaCelda, false, primerosImplicantes.indexOf(implicante), i);
-                row.addView(tv);
+                    tv = getNewTextView(marcaCelda, false, primerosImplicantes.indexOf(implicante), i);
+                    row.addView(tv);
+                }
             }
             tableLayout.addView(row);
         }
@@ -143,7 +147,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void pintarImplicantesEsenciales (boolean[][] tablaMarcas) {
-        if (tablaMarcas.length > 0) {
+        if (tablaMarcas != null && tablaMarcas.length > 0) {
             for (int i = 0; i < tablaMarcas[0].length; i++) {
                 int index = UtilsTabla.indexOfUnicaMarca(tablaMarcas, i);
                 if (index != -1) {

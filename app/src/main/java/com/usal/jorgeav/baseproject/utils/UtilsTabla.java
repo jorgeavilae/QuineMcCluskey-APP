@@ -9,25 +9,30 @@ import java.util.ArrayList;
 public class UtilsTabla {
 
     public static boolean[][] obtenerMarcasTabla(ArrayList<Implicante> primerosImplicantes, int[] minTerms) {
-        boolean[][] tablaMarcas = new boolean[primerosImplicantes.size()][minTerms.length];
+        if (minTerms != null) {
+            boolean[][] tablaMarcas = new boolean[primerosImplicantes.size()][minTerms.length];
 
-        for (Implicante implicante : primerosImplicantes) {
-            for (int i = 0; i < minTerms.length; i++) {
-                tablaMarcas[primerosImplicantes.indexOf(implicante)][i] = implicante.getTerminos().contains(minTerms[i]);
+            for (Implicante implicante : primerosImplicantes) {
+                for (int i = 0; i < minTerms.length; i++) {
+                    tablaMarcas[primerosImplicantes.indexOf(implicante)][i] = implicante.getTerminos().contains(minTerms[i]);
+                }
             }
+            return tablaMarcas;
         }
-        return tablaMarcas;
+        return null;
     }
 
     public static ArrayList<Implicante> getPrimerosImplicantesEstenciales(ArrayList<Implicante> primerosImplicantes,
                                                                           boolean[][] tablaMarcas) {
         ArrayList<Implicante> result = new ArrayList<>();
-        if (tablaMarcas.length > 0) {
-            for (int i = 0; i < tablaMarcas[0].length; i++) {
-                int index = indexOfUnicaMarca(tablaMarcas, i);
-                if (index != -1) {
-                    if (!result.contains(primerosImplicantes.get(index)))
-                        result.add(primerosImplicantes.get(index));
+        if (tablaMarcas != null) {
+            if (tablaMarcas.length > 0) {
+                for (int i = 0; i < tablaMarcas[0].length; i++) {
+                    int index = indexOfUnicaMarca(tablaMarcas, i);
+                    if (index != -1) {
+                        if (!result.contains(primerosImplicantes.get(index)))
+                            result.add(primerosImplicantes.get(index));
+                    }
                 }
             }
         }
@@ -55,24 +60,25 @@ public class UtilsTabla {
         ArrayList<Implicante> result = new ArrayList<>();
         result.addAll(primerosImplicantesEsenciales);
 
-        ArrayList<Integer> faltantes = obtenerFaltantes(result, terms);
+        if (terms != null) {
+            ArrayList<Integer> faltantes = obtenerFaltantes(result, terms);
+            ArrayList<Implicante> posibles;
+            while (faltantes.size() > 0) {
+                int maxTerminosContenidos = faltantes.size();
+                for (int i = maxTerminosContenidos; i >= 0; i--) {
+                    posibles = new ArrayList<>();
 
-        ArrayList<Implicante> posibles;
-        while (faltantes.size() > 0) {
-            int maxTerminosContenidos = faltantes.size();
-            for (int i = maxTerminosContenidos; i >= 0; i--) {
-                posibles = new ArrayList<>();
+                    for (Implicante impl : primerosImplicantes)
+                        if (impl.cuantosTerminosIguales(faltantes) == i)
+                            posibles.add(impl);
 
-                for (Implicante impl : primerosImplicantes)
-                    if (impl.cuantosTerminosIguales(faltantes) == i)
-                        posibles.add(impl);
-
-                if (posibles.size() > 0) {
-                    result.add(escogerMejorImplicante(posibles, primerosImplicantesEsenciales, isMinterm));
-                    break;
+                    if (posibles.size() > 0) {
+                        result.add(escogerMejorImplicante(posibles, primerosImplicantesEsenciales, isMinterm));
+                        break;
+                    }
                 }
+                faltantes = obtenerFaltantes(result, terms);
             }
-            faltantes = obtenerFaltantes(result, terms);
         }
         return result;
     }
