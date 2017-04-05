@@ -10,7 +10,7 @@ import java.util.List;
 public class Utils {
     public static final String PATTERN_DEFINICION_FUNCION = "^([fF] ?\\()(([a-zA-Z], ?)*[a-zA-Z])(\\))";
     public static final String PATTERN_FUNCION = "[a-zA-Z]+([a-zA-Z]*(( ?\\+ ?)[a-zA-Z])*)*$";
-    public static final String PATTERN_LISTA_TERMINOS = "^([0-9]+(, ?)?)+$";
+    public static final String PATTERN_LISTA_TERMINOS = "^\\(([0-9]+(, ?)?)+\\)$";
     private static final int LETRAS_EN_ALFABETO = 26;
 
     public static String printArrayListImplicante(ArrayList<Implicante> arrayList) {
@@ -44,7 +44,7 @@ public class Utils {
         return "";
     }
 
-    public static String printboolean(boolean[] array){
+    public static String printboolean(boolean[] array) {
         String result = "";
         if (array != null) {
             for (int i = 0; i < array.length; i++) {
@@ -54,7 +54,7 @@ public class Utils {
         return result;
     }
 
-    public static String printintegers(int[] array){
+    public static String printintegers(int[] array) {
         String result = "";
         if (array != null) {
             for (int i = 0; i < array.length; i++) {
@@ -65,7 +65,7 @@ public class Utils {
     }
 
     public static int[] convertIntegers(List<Integer> integers) {
-        if(!integers.isEmpty()) {
+        if (!integers.isEmpty()) {
             int[] ret = new int[integers.size()];
             Iterator<Integer> iterator = integers.iterator();
             for (int i = 0; i < ret.length; i++) {
@@ -84,17 +84,57 @@ public class Utils {
 
     public static int getIndexAlfabeto(char character) {
         ArrayList<Character> alfabeto = new ArrayList<>();
-        alfabeto.add('a');alfabeto.add('b');alfabeto.add('c');alfabeto.add('d');alfabeto.add('e');
-        alfabeto.add('f');alfabeto.add('g');alfabeto.add('h');alfabeto.add('i');alfabeto.add('j');
-        alfabeto.add('k');alfabeto.add('l');alfabeto.add('m');alfabeto.add('n');alfabeto.add('o');
-        alfabeto.add('p');alfabeto.add('q');alfabeto.add('r');alfabeto.add('s');alfabeto.add('t');
-        alfabeto.add('u');alfabeto.add('v');alfabeto.add('w');alfabeto.add('x');alfabeto.add('y');
+        alfabeto.add('a');
+        alfabeto.add('b');
+        alfabeto.add('c');
+        alfabeto.add('d');
+        alfabeto.add('e');
+        alfabeto.add('f');
+        alfabeto.add('g');
+        alfabeto.add('h');
+        alfabeto.add('i');
+        alfabeto.add('j');
+        alfabeto.add('k');
+        alfabeto.add('l');
+        alfabeto.add('m');
+        alfabeto.add('n');
+        alfabeto.add('o');
+        alfabeto.add('p');
+        alfabeto.add('q');
+        alfabeto.add('r');
+        alfabeto.add('s');
+        alfabeto.add('t');
+        alfabeto.add('u');
+        alfabeto.add('v');
+        alfabeto.add('w');
+        alfabeto.add('x');
+        alfabeto.add('y');
         alfabeto.add('z');
-        alfabeto.add('A'); alfabeto.add('B'); alfabeto.add('C'); alfabeto.add('D'); alfabeto.add('E');
-        alfabeto.add('F'); alfabeto.add('G'); alfabeto.add('H'); alfabeto.add('I'); alfabeto.add('J');
-        alfabeto.add('K'); alfabeto.add('L'); alfabeto.add('M'); alfabeto.add('N'); alfabeto.add('O');
-        alfabeto.add('P'); alfabeto.add('Q'); alfabeto.add('R'); alfabeto.add('S'); alfabeto.add('T');
-        alfabeto.add('U'); alfabeto.add('V'); alfabeto.add('W'); alfabeto.add('X'); alfabeto.add('Y');
+        alfabeto.add('A');
+        alfabeto.add('B');
+        alfabeto.add('C');
+        alfabeto.add('D');
+        alfabeto.add('E');
+        alfabeto.add('F');
+        alfabeto.add('G');
+        alfabeto.add('H');
+        alfabeto.add('I');
+        alfabeto.add('J');
+        alfabeto.add('K');
+        alfabeto.add('L');
+        alfabeto.add('M');
+        alfabeto.add('N');
+        alfabeto.add('O');
+        alfabeto.add('P');
+        alfabeto.add('Q');
+        alfabeto.add('R');
+        alfabeto.add('S');
+        alfabeto.add('T');
+        alfabeto.add('U');
+        alfabeto.add('V');
+        alfabeto.add('W');
+        alfabeto.add('X');
+        alfabeto.add('Y');
         alfabeto.add('Z');
         return alfabeto.indexOf(character);
     }
@@ -103,19 +143,59 @@ public class Utils {
         ArrayList<Character> alfabeto;
         if (isMinuscula) {
             alfabeto = new ArrayList<>();
-            alfabeto.add('a');alfabeto.add('b');alfabeto.add('c');alfabeto.add('d');alfabeto.add('e');
-            alfabeto.add('f');alfabeto.add('g');alfabeto.add('h');alfabeto.add('i');alfabeto.add('j');
-            alfabeto.add('k');alfabeto.add('l');alfabeto.add('m');alfabeto.add('n');alfabeto.add('o');
-            alfabeto.add('p');alfabeto.add('q');alfabeto.add('r');alfabeto.add('s');alfabeto.add('t');
-            alfabeto.add('u');alfabeto.add('v');alfabeto.add('w');alfabeto.add('x');alfabeto.add('y');
+            alfabeto.add('a');
+            alfabeto.add('b');
+            alfabeto.add('c');
+            alfabeto.add('d');
+            alfabeto.add('e');
+            alfabeto.add('f');
+            alfabeto.add('g');
+            alfabeto.add('h');
+            alfabeto.add('i');
+            alfabeto.add('j');
+            alfabeto.add('k');
+            alfabeto.add('l');
+            alfabeto.add('m');
+            alfabeto.add('n');
+            alfabeto.add('o');
+            alfabeto.add('p');
+            alfabeto.add('q');
+            alfabeto.add('r');
+            alfabeto.add('s');
+            alfabeto.add('t');
+            alfabeto.add('u');
+            alfabeto.add('v');
+            alfabeto.add('w');
+            alfabeto.add('x');
+            alfabeto.add('y');
             alfabeto.add('z');
         } else {
             alfabeto = new ArrayList<>();
-            alfabeto.add('A'); alfabeto.add('B'); alfabeto.add('C'); alfabeto.add('D'); alfabeto.add('E');
-            alfabeto.add('F'); alfabeto.add('G'); alfabeto.add('H'); alfabeto.add('I'); alfabeto.add('J');
-            alfabeto.add('K'); alfabeto.add('L'); alfabeto.add('M'); alfabeto.add('N'); alfabeto.add('O');
-            alfabeto.add('P'); alfabeto.add('Q'); alfabeto.add('R'); alfabeto.add('S'); alfabeto.add('T');
-            alfabeto.add('U'); alfabeto.add('V'); alfabeto.add('W'); alfabeto.add('X'); alfabeto.add('Y');
+            alfabeto.add('A');
+            alfabeto.add('B');
+            alfabeto.add('C');
+            alfabeto.add('D');
+            alfabeto.add('E');
+            alfabeto.add('F');
+            alfabeto.add('G');
+            alfabeto.add('H');
+            alfabeto.add('I');
+            alfabeto.add('J');
+            alfabeto.add('K');
+            alfabeto.add('L');
+            alfabeto.add('M');
+            alfabeto.add('N');
+            alfabeto.add('O');
+            alfabeto.add('P');
+            alfabeto.add('Q');
+            alfabeto.add('R');
+            alfabeto.add('S');
+            alfabeto.add('T');
+            alfabeto.add('U');
+            alfabeto.add('V');
+            alfabeto.add('W');
+            alfabeto.add('X');
+            alfabeto.add('Y');
             alfabeto.add('Z');
         }
         if (index > -1 && index < alfabeto.size())
@@ -145,20 +225,26 @@ public class Utils {
         return 0;
     }
 
-    public static boolean evaluarFuncion(String funcion, boolean[] valores) throws Exception{
+    public static boolean evaluarFuncion(String funcion, boolean[] valores) throws Exception {
+        if (funcion.equals("1")) return true;
+        if (funcion.equals("0")) return false;
+
         char aP = '(';
         int indexAP;
         char cP = ')';
         int indexCP;
         boolean tieneP = true;
 
-        while(tieneP) {
+        while (tieneP) {
             indexAP = -1;
             indexCP = -1;
 
             //Buscar primer "("
             for (int i = 0; i < funcion.length(); i++)
-                if (aP == funcion.charAt(i)) { indexAP = i; break; }
+                if (aP == funcion.charAt(i)) {
+                    indexAP = i;
+                    break;
+                }
             if (indexAP == -1)
                 if (funcion.matches(PATTERN_FUNCION)) {
                     return hacerCuenta(funcion, valores);
@@ -169,7 +255,10 @@ public class Utils {
             for (int i = indexAP; i < funcion.length(); i++) {
                 if (funcion.charAt(i) == aP) contadorP++;
                 if (funcion.charAt(i) == cP) contadorP--;
-                if (contadorP == 0) { indexCP = i; break; }
+                if (contadorP == 0) {
+                    indexCP = i;
+                    break;
+                }
             }
             if (indexCP == -1) {
                 throw new Exception("Error de parentesis");
@@ -178,13 +267,16 @@ public class Utils {
             //Evaluar subcadena
             boolean abc = evaluarFuncion(funcion.substring(indexAP + 1, indexCP), valores);
             StringBuilder buf = new StringBuilder(funcion)
-                    .replace(indexAP, indexCP + 1, (abc?"1":"0"));
+                    .replace(indexAP, indexCP + 1, (abc ? "1" : "0"));
             funcion = buf.toString();
 
             //Hay mas parentesis en este nivel?
             tieneP = false;
             for (int i = 0; i < funcion.length(); i++)
-                if (funcion.charAt(i) == aP) { tieneP = true; break; }
+                if (funcion.charAt(i) == aP) {
+                    tieneP = true;
+                    break;
+                }
         }
         return hacerCuenta(funcion, valores);
     }
@@ -207,7 +299,7 @@ public class Utils {
                 int index = getIndexAlfabeto(funcionIn.charAt(i));
                 if (index != -1) {
                     if (index >= LETRAS_EN_ALFABETO)
-                        valoresCuenta.add(!valores[index-LETRAS_EN_ALFABETO]);
+                        valoresCuenta.add(!valores[index - LETRAS_EN_ALFABETO]);
                     else
                         valoresCuenta.add(valores[index]);
                 } else if (funcionIn.charAt(i) == '1')
@@ -224,12 +316,17 @@ public class Utils {
     }
 
     public static String escribirFuncionFromImplicantes(ArrayList<Implicante> implicantes, boolean isMinterm) {
+        if (implicantes.size() == 0) {/* f=0 o f=1 / minterm o maxterm*/
+            if (isMinterm) return "0";
+            else return "1";
+        }
         if (implicantes.size() == 1 && implicantes.get(0).isTotalReduce()) {/* f=1 o f=0 / minterm o maxterm*/
             if (isMinterm) return "1";
             else return "0";
         }
         StringBuilder result = new StringBuilder("");
-        String mas = "+";
+        String or = "+";
+        String and = "·";
         String abreParentesis = "(";
         String cierraParentesis = ")";
         if (isMinterm) { /*Los 0 son variables negadas*/
@@ -246,54 +343,71 @@ public class Utils {
                             break;
                     }
                 }
-                result.append(mas);
+                result.append(or);
             }
             try {
-                result.replace(result.lastIndexOf(mas), result.lastIndexOf(mas) + 1, "");
+                result.replace(result.lastIndexOf(or), result.lastIndexOf(or) + 1, "");
             } catch (IndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
         } else { /*Los 1 son variables negadas*/
             for (Implicante impl : implicantes) {
-                result.append(abreParentesis);
+                if (implicantes.size() > 1) result.append(abreParentesis);
                 for (int i = 0; i < impl.getBinarios().size(); i++) {
                     switch (impl.getBinarios().get(i).getDigito()) {
                         case Binario.b0:
-                            result.append(getAfabetoFromIndex(i, true)).append(mas); /*Minusculas*/
+                            result.append(getAfabetoFromIndex(i, true)).append(or); /*Minusculas*/
                             break;
                         case Binario.b1:
-                            result.append(getAfabetoFromIndex(i, false)).append(mas); /*Mayusculas*/
+                            result.append(getAfabetoFromIndex(i, false)).append(or); /*Mayusculas*/
                             break;
                         case Binario.bZ:
                             break;
                     }
                 }
                 try {
-                    result.replace(result.lastIndexOf(mas), result.lastIndexOf(mas) + 1, "");
+                    result.replace(result.lastIndexOf(or), result.lastIndexOf(or) + 1, "");
                 } catch (IndexOutOfBoundsException e) {
                     e.printStackTrace();
                 }
-                result.append(cierraParentesis);
+                if (implicantes.size() > 1) {
+                    if (!result.toString().contains(or)) {
+                        try {
+                            result.replace(result.indexOf(abreParentesis), result.indexOf(abreParentesis) + 1, "");
+                        } catch (IndexOutOfBoundsException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        result.append(cierraParentesis);
+                    }
+                    result.append(and);
+                }
+            }
+            try {
+                result.replace(result.lastIndexOf(and), result.lastIndexOf(and) + 1, "");
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
             }
         }
         return result.toString();
     }
 
-    public static int contarPuertas(String funcion) {
+    public static int contarPuertas(String funcion, boolean isMinterm) {
         if (funcion.equals("1") || funcion.equals("0") || funcion.equals("")) /* f=1 o f=0 / minterm o maxterm*/
             return 0;
 
         int result = 0;
         ArrayList<Integer> variablesNegadasPresentes = new ArrayList<>();
-        String mas = "\\+";
+        String or = "\\+";
+        String and = "·";
         String abreParentesis = "\\(";
         String cierraParentesis = "\\)";
 
-        if (!funcion.contains("(")) { /*Minterms*/
-            String[] mintermsStr = funcion.split(mas);
+        if (isMinterm) { /*Minterms*/
+            String[] mintermsStr = funcion.split(or);
             if (mintermsStr.length > 1) result++; /*Puerta OR*/
-            result += mintermsStr.length; /*Puertas AND*/
             for (String aMintermsStr : mintermsStr) {
+                if (aMintermsStr.length() > 1) result++; /*Puerta AND*/
                 for (int j = 0; j < aMintermsStr.length(); j++) {
                     int index = getIndexAlfabeto(aMintermsStr.charAt(j));
                     if (index != -1)
@@ -305,13 +419,13 @@ public class Utils {
                 }
             }
         } else { /*Maxterms*/
-            String[] maxtermsStr = funcion.split(cierraParentesis+abreParentesis);
+            String[] maxtermsStr = funcion.split(and);
             if (maxtermsStr.length > 1) result++; /*Puerta AND*/
-            result += maxtermsStr.length; /*Puertas OR*/
             for (String aMaxtermsStr : maxtermsStr) {
                 aMaxtermsStr = aMaxtermsStr.replace(abreParentesis, "");
                 aMaxtermsStr = aMaxtermsStr.replace(cierraParentesis, "");
-                String[] maxtermsStrNoMas = aMaxtermsStr.split(mas);
+                String[] maxtermsStrNoMas = aMaxtermsStr.split(or);
+                if (maxtermsStrNoMas.length > 1) result++; /*Puerta OR*/
                 for (String aMaxtermsStrNoMas : maxtermsStrNoMas) {
                     for (int j = 0; j < aMaxtermsStrNoMas.length(); j++) {
                         int index = getIndexAlfabeto(aMaxtermsStrNoMas.charAt(j));

@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">Quine-McCluskey</string>
 
-    <string name="funcion_hint">Funcion [ Ej. (Ab+C)(d+E)F ]</string>
-    <string name="no_ni_hint">NO/NI (separados por \", \")</string>
+    <string name="funcion_hint">Funcion [ Ej. f(a,b,c,d,e,f)=(Ab+C)(d+E)F ]</string>
+    <string name="no_ni_hint">NO/NI [Ej. (1,2,3)]</string>
     <string name="minterms">minTerms</string>
     <string name="maxterms">MaxTerms</string>
-    <string name="sumatorio">&#x03A3;m = %s</string>
-    <string name="producto">&#x03A0;M = %s</string>
+    <string name="sumatorio">&#x03A3; implicantes = %s</string>
+    <string name="producto">&#x03A0; implicantes = %s</string>
     <string name="funcion">f = %s</string>
     <string name="puertas">%d Puertas</string>
     <string name="detalles">Detalles</string>

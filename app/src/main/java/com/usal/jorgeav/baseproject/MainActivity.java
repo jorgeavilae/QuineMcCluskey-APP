@@ -96,8 +96,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
             ArrayList<Integer> max = new ArrayList<>();
 
             if (funcion.matches(Utils.PATTERN_LISTA_TERMINOS)) {
+                funcion = funcion.replace("(","");
+                funcion = funcion.replace(")","");
                 String[] terminosStr = funcion.split("(, ?)");
                 for (int i = 0; i < terminosStr.length; i++)
+                    if (!Utils.hasInt(no_ni, Integer.valueOf(terminosStr[i])))
                     min.add(Integer.valueOf(terminosStr[i]));
                 max.addAll(Utils.obtenerRestoDeTerminos(numVariables, min, no_ni));
             } else {
@@ -125,16 +128,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
             return true;
         }
         return false;
-
-
-//        numVariables = 2;
-//        parsearNoNi("");
-//        minTerms = new int[]{0,1,2,3};
-//        maxTerms = new int[]{};
     }
 
     private void parsearNoNi(String noniString) {
         if (!noniString.isEmpty()) {
+            noniString = noniString.replace("(","");
+            noniString = noniString.replace(")","");
             String[] terminosStr = noniString.split("(, ?)");
             ArrayList<Integer> noni = new ArrayList<>();
             for (int i = 0; i < terminosStr.length; i++) {
@@ -151,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
     @Override
     public void onQuineMcluskey(String funcionStr, String noniString) {
-//        funcionStr = "f(a,b)=ab+Ab+aB+AB";
+//        funcionStr = "f(a)=aA";
 //        noniString = "";
 
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
@@ -170,8 +169,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
             Log.d("RESULT", "Primeros Implicantes M: "+Utils.printArrayListImplicante(primerosImplicantesTotalesMaxterm));
             Log.d("RESULT", "Funcion m: "+Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true));
             Log.d("RESULT", "Funcion M: "+Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false));
-            Log.d("RESULT", "Puertas m: "+String.valueOf(Utils.contarPuertas(Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true))));
-            Log.d("RESULT", "Puertas M: "+String.valueOf(Utils.contarPuertas(Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false))));
+            Log.d("RESULT", "Puertas m: "+String.valueOf(Utils.contarPuertas(Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true), true)));
+            Log.d("RESULT", "Puertas M: "+String.valueOf(Utils.contarPuertas(Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false), false)));
             mostrarResultados();
             ((MainFragment) fragment).showResultados();
         }
@@ -185,10 +184,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         MainFragment mainFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         funcionSimple = Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMinterm, true);
-        puertas = Utils.contarPuertas(funcionSimple);
+        puertas = Utils.contarPuertas(funcionSimple, true);
         mainFragment.setMintermResults(implicantesMinterm, funcionSimple, puertas);
         funcionSimple = Utils.escribirFuncionFromImplicantes(primerosImplicantesTotalesMaxterm, false);
-        puertas = Utils.contarPuertas(funcionSimple);
+        puertas = Utils.contarPuertas(funcionSimple, false);
         mainFragment.setMaxtermResults(implicantesMaxterm, funcionSimple, puertas);
     }
 
@@ -300,6 +299,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         switch (item.getItemId()) {
             case android.R.id.home:
                 MainFragment mainFragment = new MainFragment();
+                Bundle b = new Bundle();
+                b.putString(BUNDLE_ET_FUNCION_KEY, etFuncion);
+                b.putString(BUNDLE_ET_NONI_KEY, etNoni);
+                mainFragment.setArguments(b);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, mainFragment).commitNow();
                 if (primerosImplicantesTotalesMinterm != null && primerosImplicantesTotalesMaxterm != null)
@@ -317,6 +320,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         if (fragment instanceof DetailFragment) {
             MainFragment mainFragment = new MainFragment();
+            Bundle b = new Bundle();
+            b.putString(BUNDLE_ET_FUNCION_KEY, etFuncion);
+            b.putString(BUNDLE_ET_NONI_KEY, etNoni);
+            mainFragment.setArguments(b);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, mainFragment).commitNow();
             if (primerosImplicantesTotalesMinterm != null && primerosImplicantesTotalesMaxterm != null)
