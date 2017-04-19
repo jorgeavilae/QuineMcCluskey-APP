@@ -12,8 +12,10 @@ public class UtilsTabla {
         if (minTerms != null) {
             boolean[][] tablaMarcas = new boolean[primerosImplicantes.size()][minTerms.length];
 
+            //Recorre la lista de implicantes
             for (Implicante implicante : primerosImplicantes) {
                 for (int i = 0; i < minTerms.length; i++) {
+                    //True si este implicante contiene este termino, false en caso contrario
                     tablaMarcas[primerosImplicantes.indexOf(implicante)][i] = implicante.getTerminos().contains(minTerms[i]);
                 }
             }
@@ -22,13 +24,15 @@ public class UtilsTabla {
         return null;
     }
 
-    public static ArrayList<Implicante> getPrimerosImplicantesEstenciales(ArrayList<Implicante> primerosImplicantes,
+    public static ArrayList<Implicante> getPrimerosImplicantesEsenciales(ArrayList<Implicante> primerosImplicantes,
                                                                           boolean[][] tablaMarcas) {
         ArrayList<Implicante> result = new ArrayList<>();
+        //Recorre la tabla
         if (tablaMarcas != null) {
             if (tablaMarcas.length > 0) {
                 for (int i = 0; i < tablaMarcas[0].length; i++) {
                     int index = indexOfUnicaMarca(tablaMarcas, i);
+                    //Si es la unica marca de la columna i
                     if (index != -1) {
                         if (!result.contains(primerosImplicantes.get(index)))
                             result.add(primerosImplicantes.get(index));
@@ -42,10 +46,11 @@ public class UtilsTabla {
     public static int indexOfUnicaMarca(boolean[][] tablaMarcas, int columna) {
         int index = -1;
         for (int j = 0; j < tablaMarcas.length; j++) {
+            //Si hay marca en la fila j
             if (tablaMarcas[j][columna]) {
-                if (index == -1) {
+                if (index == -1) { //Si es la primera marca
                     index = j;
-                } else {
+                } else { //Si no es la primera marca
                     index = -1;
                     break;
                 }
@@ -63,8 +68,12 @@ public class UtilsTabla {
         if (terms != null) {
             ArrayList<Integer> faltantes = obtenerFaltantes(result, terms);
             ArrayList<Implicante> posibles;
+
+            //Mientras falten terminos
             while (faltantes.size() > 0) {
                 int maxTerminosContenidos = faltantes.size();
+                //Buscar implicante que contenga todos los que falten,
+                // si no todos los que falten menos -1, si no -2, etc.
                 for (int i = maxTerminosContenidos; i >= 0; i--) {
                     posibles = new ArrayList<>();
 
@@ -72,11 +81,14 @@ public class UtilsTabla {
                         if (impl.cuantosTerminosIguales(faltantes) == i)
                             posibles.add(impl);
 
+                    //Si hay implicantes con i terminos, escoger el mejor
                     if (posibles.size() > 0) {
                         result.add(escogerMejorImplicante(posibles, primerosImplicantesEsenciales, isMinterm));
                         break;
                     }
                 }
+
+                //Faltan mas terminos?
                 faltantes = obtenerFaltantes(result, terms);
             }
         }
@@ -86,12 +98,14 @@ public class UtilsTabla {
     private static ArrayList<Integer> obtenerFaltantes(ArrayList<Implicante> lista, int[] valores) {
         ArrayList<Integer> faltantes = new ArrayList<>();
         boolean presente;
+        //Recorrer lista de terminos
         for (int i = 0; i < valores.length; i++) {
             presente = false;
             for (Implicante implicante : lista) {
                 if (implicante.getTerminos().contains(Integer.valueOf(valores[i])))
                     presente = true;
             }
+            //Si ningun implicante contiene el termino
             if (!presente) faltantes.add(Integer.valueOf(valores[i]));
         }
         return faltantes;
@@ -105,12 +119,14 @@ public class UtilsTabla {
         //El más simplificado
         if (posibles.size() > 1) {
             int numTerminos = 0;
+            //Recorrer posibles implicantes buscando numTerminos mas alto
             for (Implicante implicante : posibles) {
                 if (implicante.getTerminos().size() > numTerminos) {
                     numTerminos = implicante.getTerminos().size();
                 } else if (implicante.getTerminos().size() < numTerminos)
                     posibles.remove(implicante);
             }
+            //Borramos todos los que no tengan numTerminos
             for (Implicante borrar : new ArrayList<>(posibles))
                 if (borrar.getTerminos().size() < numTerminos)
                     posibles.remove(borrar);
@@ -121,6 +137,7 @@ public class UtilsTabla {
         if (posibles.size() > 1) {
             int numEntradas = 0;
             for (Implicante implicante : posibles) {
+                //Buscar entradas negadas en comun con el resto de implicantes
                 int entradasNegadasEnComun =
                         implicante.getEntradasNegadasEnComun(primerosImplicantesEsenciales, true);
                 if (entradasNegadasEnComun > numEntradas) {
@@ -128,6 +145,7 @@ public class UtilsTabla {
                 } else if (entradasNegadasEnComun < numEntradas)
                     posibles.remove(implicante);
             }
+            //Borrar todos los que tengan menos entradas negadas en comun que el elegido
             for (Implicante borrar : new ArrayList<>(posibles))
                 if (borrar.getEntradasNegadasEnComun(primerosImplicantesEsenciales, true) < numEntradas)
                     posibles.remove(borrar);
@@ -137,18 +155,22 @@ public class UtilsTabla {
         //El que tenga menos variables negadas
         if (posibles.size() > 1) {
             int numVariableNegadas = 1000;
+            //Recorrer la lista de implicantes
             for (Implicante implicante : posibles) {
                 if (implicante.getVariablesNegadas(isMinterm) < numVariableNegadas) {
                     numVariableNegadas = implicante.getVariablesNegadas(isMinterm);
                 } else if (implicante.getVariablesNegadas(isMinterm) > numVariableNegadas)
                     posibles.remove(implicante);
             }
+            //Borrar todos los que tengan mas entradas negadas
             for (Implicante borrar : new ArrayList<>(posibles))
                 if (borrar.getVariablesNegadas(isMinterm) > numVariableNegadas)
                     posibles.remove(borrar);
         }
         Log.i("Utils", "escogerMejorImplicante: Posibles implicantes "+posibles.size()+" menos variables negadas"+" "+ Utils.printArrayListImplicante(posibles));
 
+        //Al final solo habra uno implicante posible,
+        // si hay más, seran igual de validos.
         return posibles.get(0);
     }
 }

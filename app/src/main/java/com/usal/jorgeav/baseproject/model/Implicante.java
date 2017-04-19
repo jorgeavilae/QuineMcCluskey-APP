@@ -17,8 +17,11 @@ public class Implicante {
 
     public Implicante(ArrayList<Integer> terminos, ArrayList<Binario> binarios, int iteracion, int numVariables) {
         this.terminos = terminos;
+
+        //Si solo tiene un termino, traducimos a binario
         if (terminos.size() == 1)
             this.binarios = UtilsBinarios.intToBinarios(terminos.get(0), numVariables);
+        //Si no, hay que pasarselo
         else if (binarios != null) this.binarios = binarios;
         else throw new NullPointerException("\"binarios\" can not be NULL");
 
@@ -68,6 +71,7 @@ public class Implicante {
 
         Implicante that = (Implicante) o;
 
+        //Para comprobar si son iguales se comprueban sus bits
         return binarios.equals(that.binarios);
 
     }

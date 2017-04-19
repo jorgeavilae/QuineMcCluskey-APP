@@ -23,10 +23,6 @@ public class Binario {
         return digito;
     }
 
-    public void setDigito(@EstadoBinario int digito) {
-        this.digito = digito;
-    }
-
     @Override
     public String toString() {
         switch (this.digito) {

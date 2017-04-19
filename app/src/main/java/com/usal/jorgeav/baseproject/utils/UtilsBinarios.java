@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class UtilsBinarios {
 
     public static ArrayList<Binario> fusionaBinarios(ArrayList<Binario> a, ArrayList<Binario> b) {
+        // 100 + 110 = 1-0
         ArrayList<Binario> result = new ArrayList<>();
         if (a.size() == b.size())
             for (int i = 0; i < a.size(); i++) {
@@ -20,6 +21,7 @@ public class UtilsBinarios {
     }
 
     public static int digitosDiferentes(ArrayList<Binario> primero, ArrayList<Binario> segundo) {
+        //100 y 111 -> 2
         int diferentes = 0;
         for (int i = 0; i < primero.size(); i++) {
             if (!(primero.get(i).getDigito() == segundo.get(i).getDigito()))
@@ -29,6 +31,7 @@ public class UtilsBinarios {
     }
 
     public static ArrayList<Binario> intToBinarios(int n, int numOfBits) {
+        // 2 con 3 bits = 0010
         ArrayList<Binario> result = new ArrayList<>(numOfBits);
         boolean[] boolResult = intToBinaryBoolean(n, numOfBits);
         for (int i = 0; i < boolResult.length; i++) {
@@ -38,6 +41,7 @@ public class UtilsBinarios {
     }
 
     public static boolean[] intToBinaryBoolean(int n, int numOfBits) {
+        // 2 con 4 bits = [0,0,1,0]
         boolean[] result = new boolean[numOfBits];
         for(int i = numOfBits-1; i >= 0; --i, n/=2) {
             switch (n % 2) {
@@ -53,6 +57,7 @@ public class UtilsBinarios {
     }
 
     public static int contarUnosCeros(ArrayList<Binario> binarios, @Binario.EstadoBinario int buscado) {
+        // 0010 y 0 -> 3
         int contador = 0;
         for (Binario b : binarios)
             if (b.getDigito() == buscado)
