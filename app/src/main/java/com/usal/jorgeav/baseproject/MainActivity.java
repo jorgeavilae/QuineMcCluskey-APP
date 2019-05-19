@@ -19,7 +19,6 @@ import com.usal.jorgeav.baseproject.utils.UtilsTabla;
 
 import java.util.ArrayList;
 
-// TODO: 01/04/2017 Lint;
 public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener {
     public static final String BUNDLE_ET_FUNCION_KEY = "BUNDLE_ET_FUNCION_KEY";
     public static final String BUNDLE_ET_NONI_KEY = "BUNDLE_ET_NONI_KEY";
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     int minTerms[];
     //Lista de Maxterms
     int maxTerms[];
-    //Lista de Terminos NO/NI
+    //Lista de Términos NO/NI
     int no_ni[];
 
     //Lista de listas de implicantes
